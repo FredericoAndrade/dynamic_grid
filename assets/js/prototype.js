@@ -2,7 +2,7 @@
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
 import * as editGrid from "./modules/grid.js";
 import { renderCell } from "./modules/utilities.js";
-import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth, inputGridChange } from "./modules/view.js";
+import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth } from "./modules/view.js";
 
 const canvas = $("#canvas"),
 workspace = $("#workspace"),
