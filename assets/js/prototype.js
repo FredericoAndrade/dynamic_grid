@@ -1,5 +1,4 @@
 "use strict";
-console.log("hi")
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
 import * as editGrid from "./modules/grid.js";
 import { renderCell } from "./modules/utilities.js";
