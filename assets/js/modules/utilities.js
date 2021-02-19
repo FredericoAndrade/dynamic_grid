@@ -53,3 +53,5 @@ function renderCell(cell) {
     </div>
   `)
 }
+
+export { renderCell, getSmallestAvailableIndex };
