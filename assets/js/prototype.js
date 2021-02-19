@@ -12,19 +12,6 @@ border = $("#border")
 
 updateSlider(zoom.val())
 
-// functions
-// Rows: addTop, addBottom, removeTop, removeBottom
-// Columns: addLeft, addRight, removeLeft, removeRight
-// getSmallestAvailableIndex
-// generateGrid
-// removeCells
-// renderCell
-// updateSlider
-// reportWindowSize
-// updateCellSize
-// updateTools
-// reportGridSize
-
 // const grid = new Grid(7,6,2);
 const grid = new Grid(4,3,2);
 

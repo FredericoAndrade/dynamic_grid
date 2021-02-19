@@ -2,8 +2,9 @@ const workspace = $("#workspace"),
 zoom = $("#zoom"),
 border = $("#border")
 let borderVal = border.val,
+val = zoom.val()
 height,
-width
+width,
 
 function updateSlider(val) {
 	$("#lens").css("width",`${val}%`)	
@@ -35,7 +36,7 @@ function reportGridSize(grid) {
 	console.log("Grid size: ", grid)
 }
 
-$("input[type='number']").on("change",function(e) {
+$("input[type='number']").on("change",function(grid, e) {
 	const param = e.target;
   const updatedValue = param.value;
   const sign = grid[param.id] < updatedValue ? "add" : "remove";
@@ -47,13 +48,13 @@ $("input[type='number']").on("change",function(e) {
   $(".nucleus").css("border-width",`${grid.border}px`);
 })
 
-zoom.on("input change", function() {
+zoom.on("input change", function(grid) {
   val = this.value;
   updateSlider(val)
 	updateCellSize(grid);
 })
 
-border.on("input change", function() {
+border.on("input change", function(grid) {
   borderVal = this.value;
   grid.border = this.value;
   $(".buttonGroup#borderGroup input[type='text']")[0].value = this.value
