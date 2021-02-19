@@ -60,7 +60,7 @@ function generateGrid() {
 window.onresize = reportWindowSize;
 updateTools(grid);
 
-$("input[type='number']").on("change",function(e, grid) {
+$("input[type='number']").on("change",function(e) {
 	const param = e.target;
   const updatedValue = param.value;
   const sign = grid[param.id] < updatedValue ? "add" : "remove";
