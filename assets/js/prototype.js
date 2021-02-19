@@ -59,6 +59,19 @@ function generateGrid() {
 window.onresize = reportWindowSize;
 updateTools(grid);
 
+$("input[type='number']").on("change",function(e, grid) {
+	console.log(e)
+	const param = e.target;
+  const updatedValue = param.value;
+  const sign = grid[param.id] < updatedValue ? "add" : "remove";
+  const loc = param.id == "columns" ? "Right" : "Bottom";
+  let magnitude = updatedValue - grid[param.id]
+	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
+		window[`${sign}${loc}`]()
+	}
+  $(".nucleus").css("border-width",`${grid.border}px`);
+})
+
 // Bindings
 $("button#addLeft").on("click",function(){editGrid.addLeft(grid)})
 $("button#addRight").on("click",function(){editGrid.addRight(grid)})

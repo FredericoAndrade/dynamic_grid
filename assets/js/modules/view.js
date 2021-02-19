@@ -1,5 +1,3 @@
-import { addBottom, addRight, removeBottom, removeRight } from "./grid.js";
-
 const workspace = $("#workspace"),
 zoom = $("#zoom"),
 border = $("#border")
@@ -54,20 +52,6 @@ function updateZoom(grid, e) {
 	updateCellSize(grid);
 }
 
-function inputGridChange(grid, e) {
-	const param = e.target;
-  const updatedValue = param.value;
-  const sign = grid[param.id] < updatedValue ? "add" : "remove";
-  const loc = param.id == "columns" ? "Right" : "Bottom";
-  let magnitude = updatedValue - grid[param.id]
-  let target = sign+loc
-
-	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
-		window[addBottom]()
-	}
-  $(".nucleus").css("border-width",`${grid.border}px`);
-}
-
 function changeBorderWidth(grid, e) {
 	borderVal = e.target.value;
   grid.border = e.target.value;
@@ -76,4 +60,4 @@ function changeBorderWidth(grid, e) {
   workspace.css("outline-width",`${grid.border}px`);
 }
 
-export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth, inputGridChange };
+export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth };
