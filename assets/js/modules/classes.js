@@ -1,7 +1,3 @@
-export function test(i) {
-	console.log(i)
-}
-
 class Grid {
   constructor(columns, rows, border) {
     this.columns = columns,

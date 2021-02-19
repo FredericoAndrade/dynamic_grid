@@ -1,4 +1,4 @@
-import { Grid, Column, Row, Cell } from "./modules/test.js";
+import { Grid, Column, Row, Cell } from "./modules/classes.js";
 "use strict";
 
 let canvas = $("#canvas"),
@@ -464,6 +464,3 @@ if (interactive === true) {
 	  return false;
 	};
 }
-
-console.log("test")
-test("hi")
