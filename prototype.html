@@ -1,0 +1,72 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="icon.png">
+
+        <!-- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400,900&display=swap" rel="stylesheet"> -->
+        <script src="assets/js/data.json"></script>
+        <link rel="stylesheet" href="assets/css/prototype.css">
+    </head>
+    <body>
+        
+        <div id="canvas">
+        	<div id="lens">
+        		<div id="workspace">
+        		</div>
+        	</div>
+        </div>
+        <div id="tools">
+					  <div class="buttonGroup">
+					  	<p>Zoom:</p>
+					  	<input type="range" min="1" max="150" value="80" class="slider" id="zoom">
+					  </div>
+					  <div class="buttonGroup" id="borderGroup">
+				  		<p>Border:</p>
+				  		<input type="text" value="2" min="0" step="1" disabled>	
+				  		<input type="range" min="0" max="10" value="2" step="1" class="slider" id="border">
+					  	<button type="button" title="borderColor" id="borderColor">white</button>
+				  	</div>
+					  <div class="buttonGroup"><p>Columns: </p>
+					  	<div class="subgroup">
+					  		<button type="button" title="addLeft" id="addLeft" name="addLeft">+</button>
+							  <button type="button" title="removeLeft" id="removeLeft" name="removeLeft">-</button>
+					  	</div>
+						  <input type="number" id="columns" name="columnsInput" min="1" step="1">
+						  <div class="subgroup">
+						  	<button type="button" title="addRight" id="addRight" name="columnAdd">+</button>
+							  <button type="button" title="removeRight" id="removeRight" name="columnAdd">-</button>
+						  </div>
+					  </div>
+					  <div class="buttonGroup">
+					  	<p>Rows: </p>
+					  	<div class="subgroup">
+					  		<button type="button" title="addTop" id="addTop" name="addTop">+</button>
+						  	<button type="button" title="removeTop" id="removeTop" name="removeTop">-</button>
+					  	</div>
+					  	<input type="number" id="rows" name="rowsInput" min="1" step="1">
+					  	<div class="subgroup">
+					  		<button type="button" title="addBottom" id="addBottom" name="addBottom">+</button>
+						  	<button type="button" title="removeBottom" id="removeBottom" name="removeBottom">-</button>
+					  	</div>
+					  </div>
+						<div class="buttonGroup">
+							<p>Number of cells:</p>
+							<input type="number" id="gridSize" name="gridSizeInput" min="0" step="1" disabled>
+							<br>
+						  <button id="gridSize">report grid size</button>
+						</div>
+						
+					</div>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
+        
+        <script src="assets/js/prototype.js" type="module"></script>
+        <!-- <script src="assets/js/test.js"></script> -->
+    </body>
+</html>

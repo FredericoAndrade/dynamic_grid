@@ -1,0 +1,98 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- <link rel="manifest" href="site.webmanifest"> -->
+        <link rel="apple-touch-icon" href="icon.png">
+        <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400,900&display=swap" rel="stylesheet">
+        <script src="assets/js/data.json"></script>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <!-- <p>Hello world! This is HTML5 Boilerplate.</p> -->
+        <div id="nav">
+          <a href="https://www.wikitongues.org"><img src="https://wikitongues.org/wp-content/themes/wikitongues/img/logo.jpg" alt="Wikitongues"/></a>
+        </div>
+        <div id="wrapper">
+          <div id="canvas">
+          </div>
+          <div id="title"></div>
+          <div id="controls">
+            <p>All Wikitongues content is licensed under Creative Commons unless explicitly stated.</p>
+            <button id="latest">Latest</button>
+            <button id="random">Random</button>
+          </div>
+          <div id="menu">
+            <span class="group">
+              <span class="element"></span>
+              <span class="element"></span>
+              <span class="element"></span>
+            </span>
+            <span class="background"></span>
+          </div>
+        </div>
+        <div id="tool" class="hidden">
+          <h2>Settings</h2>
+          <button class="close" data-for="tool">
+            <span class="background"></span>
+          </button>
+          <label>
+            <span class="iconContainer">
+              <span class="icon column"></span>
+              <span class="icon column"></span>
+              Columns
+            </span>
+            <input type="number" id="columns" name="columnsInput" min="1" step="1">
+          </label>
+          <label>
+            <span class="iconContainer">
+              <span class="icon row"></span>
+              <span class="icon row"></span>
+              Rows
+            </span>
+            <input type="number" id="rows" name="rowsInput" min="1" step="1">
+          </label>
+          <label>
+            <span>Border</span>
+            <input type="number" id="border" name="borderInput" min="0" step="1">
+            <span class="borderColorContainer">
+              <button class="borderColor" id="black"></button>
+              <button class="borderColor" id="white"></button>
+            </span>
+          </label>
+          <label>
+            Grid Size
+            <input type="number" id="gridSize" name="gridSizeInput" min="0" step="1" disabled>
+          </label>
+          <div id="metadata">
+            <p><span>Show</span> Metadata</p>
+          </div>
+        </div>
+        <!-- <script src="js/vendor/modernizr-3.5.0.min.js"></script> -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
+        <!-- <script src="js/plugins.js"></script> -->
+        <!-- <script src="/assets/js/main.js"></script> -->
+        <!-- <script src="/assets/js/single.js"></script> -->
+        <script src="assets/js/main.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+        <!-- <script>
+            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
+        </script>
+        <script src="https://www.google-analytics.com/analytics.js" async defer></script> -->
+    </body>
+</html>
