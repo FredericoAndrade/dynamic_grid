@@ -58,9 +58,9 @@ function inputGridChange(grid, e) {
   const sign = grid[param.id] < updatedValue ? "add" : "remove";
   const loc = param.id == "columns" ? "Right" : "Bottom";
   let magnitude = updatedValue - grid[param.id]
-  console.log(`${sign}${loc}`)
+  let target = `${sign}${loc}`
 	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
-		window[`${sign}${loc}`]()
+		window[target]()
 	}
   $(".nucleus").css("border-width",`${grid.border}px`);
 }
