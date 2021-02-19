@@ -1,4 +1,4 @@
-import "./modules/test.js";
+import {test} from "./modules/test.js";
 "use strict";
 
 let canvas = $("#canvas"),
