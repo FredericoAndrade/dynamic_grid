@@ -2,7 +2,7 @@
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
 import * as editGrid from "./modules/grid.js";
 import { renderCell } from "./modules/utilities.js";
-import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize } from "./modules/view.js";
+import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom } from "./modules/view.js";
 
 const canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -70,6 +70,7 @@ $("button#removeTop").on("click",function(){editGrid.removeTop(grid)})
 $("button#removeBottom").on("click",function(){editGrid.removeBottom(grid)})
 $("#gridSize").on("click", function() {reportGridSize(grid)})
 $("#borderColor").on("click",function() {toggleBorderColor(grid)})
+zoom.on("input change", function() {updateZoom(grid)})
 
 // $(document).on("mousedown",".cell", function(e) {
 // 	const target = grid.cells.filter(e => e.index == this.dataset.cell)[0]

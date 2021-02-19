@@ -46,6 +46,12 @@ function toggleBorderColor(grid, e) {
   $(".nucleus").css("border-color",output);
 }
 
+function updateZoom(grid) {
+	val = this.value;
+  updateSlider(val)
+	updateCellSize(grid);
+}
+
 $("input[type='number']").on("change",function(grid, e) {
 	const param = e.target;
   const updatedValue = param.value;
@@ -58,13 +64,7 @@ $("input[type='number']").on("change",function(grid, e) {
   $(".nucleus").css("border-width",`${grid.border}px`);
 })
 
-function updateZoom(grid) {
-	val = this.value;
-  updateSlider(val)
-	updateCellSize(grid);
-}
 
-zoom.on("input change", function() {updateZoom(grid)})
 
 border.on("input change", function(grid) {
   borderVal = this.value;
@@ -76,4 +76,4 @@ border.on("input change", function(grid) {
 
 
 
-export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize };
+export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom };
