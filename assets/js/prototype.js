@@ -3,6 +3,7 @@
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
 lens = $("#lens"),
+interactive = false,
 height,
 width,
 zoom = $("#zoom"),
@@ -10,20 +11,7 @@ border = $("#border"),
 borderVal = border.val,
 val = zoom.val();
 
-updateSlider()
-
-// functions
-// Rows: addTop, addBottom, removeTop, removeBottom
-// Columns: addLeft, addRight, removeLeft, removeRight
-// getSmallestAvailableIndex
-// generateGrid
-// removeCells
-// renderCell
-// updateSlider
-// reportWindowSize
-// updateCellSize
-// updateTools
-// reportGridSize
+updateZoom();
 
 class Grid {
   constructor(columns, rows, border) {
@@ -82,8 +70,8 @@ class Cell {
 	};
 };
 
-// const grid = new Grid(7,6,2);
-const grid = new Grid(4,3,2);
+const grid = new Grid(7,6,2);
+// const grid = new Grid(4,3,2);
 
 ( //Render Grid
   function() {
@@ -101,169 +89,117 @@ const grid = new Grid(4,3,2);
     }
 
     generateGrid("columns")
+
   }()
 );
 
-function addTop() {
-	const row = new Row(getSmallestAvailableIndex("rowSet"));
-	const newRowCount = grid.rows + 1;
-	grid.rowSet.unshift(row)
+
+function addRow(index) {
+	const row = new Row(getSmallestAvailableIndex("rowSet")),
+	top = index == "top",
+	newRowCount = grid.rows + 1,
+	rowLocation = top ? "beforebegin" : "afterend",
+	locationRoot = top ? 0 : workspace.children().length - 1;
+	
+	top ? grid.rowSet.unshift(row) : grid.rowSet.push(row)
 	grid.rows = newRowCount
-  updateTools();
   
-	for (var i = grid.columns - 1; i >= 0; i--) {
-		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount + i)
-		grid.cells.unshift(cell)
-		workspace.children()[0].insertAdjacentHTML('beforebegin',renderCell(cell))
+	for (var i = grid.columns - 1; i >=  0; i--) {
+		let cellindex = top ? grid.cellCount + 1 : grid.cellCount,
+		cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount + i)
+		
+		top ? grid.cells.unshift(cell) : grid.cells.push(cell)
+		workspace.children()[locationRoot].insertAdjacentHTML(rowLocation,renderCell(cell))
 	}
-
-	updateCellSize();
-	grid.cellCount = grid.cells.length
+	updateGridUtility()
 }
 
-function addBottom() {
-	const row = new Row(getSmallestAvailableIndex("rowSet"));
-	let newRowCount = grid.rows + 1
-	grid.rowSet.push(row)
-	grid.rows = newRowCount
-  updateTools();
 
-	for (var i = 0; i <= grid.columns - 1; i++) {
-		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount)
-		grid.cells.push(cell)
-		grid.cellCount = grid.cells.length
-		workspace.children()[workspace.children().length - 1].insertAdjacentHTML('afterend',renderCell(cell))
-	}
-	updateCellSize();
-}
+function addColumn(index) {
+	const column = new Column(getSmallestAvailableIndex("columnSet")),
+	left = index == "left",
+	newColumnCount = grid.columns + 1,
+	columnLocation = left ? "beforebegin" : "afterend";
 
-function removeTop() {
-	if (grid.rows > 1) {
-
-		grid.rows = grid.rows - 1
-		grid.rowSet.splice(0,1)
-	  updateTools();
-	  
-		for (var i = grid.columns - 1; i >= 0; i--) {
-			grid.cells.splice(0,1)
-			workspace.children()[0].remove()
-		}
-		grid.cellCount = grid.cells.length
-		updateCellSize();
-	}
-}
-
-function removeBottom() {
-	if (grid.rows > 1) {
-		grid.rows = grid.rows - 1
-		grid.rowSet.splice(grid.rowSet.length - 1,1)
-	  updateTools();
-	  
-		for (var i = grid.columns - 1; i >= 0; i--) {
-			grid.cells.splice(grid.cells.length - 1,1)
-			workspace.children()[grid.cells.length - 1].remove()
-		}
-		grid.cellCount = grid.cells.length
-		updateCellSize();
-	}
-}
-
-function addLeft() {
 	let array = []
+	
 	for (var i = 0; i <= grid.rows - 1; i++) {
-		array.push(grid.columns * i)
+		let columnCount = left ? (i * grid.columns) : (grid.columns + (grid.columns * i) - 1);
+		array.push(columnCount)
 	}
-
-	let newColumnCount = grid.columns + 1
-	const column = new Column(getSmallestAvailableIndex("columnSet"))
-	grid.columnSet.unshift(column)
+	
+	left ? grid.columnSet.unshift(column) : grid.columnSet.push(column)
 	grid.columns = grid.columnSet.length
-  
-  
 
 	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(getSmallestAvailableIndex("columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i)
+		let cell = new Cell(getSmallestAvailableIndex("columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i),
+		cellLocation = left ? array[i] : array[i] + 1;
 
-		grid.cells.splice(array[i],0,cell)
-
-		workspace.children()[array[i]].insertAdjacentHTML('beforebegin',renderCell(cell))
+		grid.cells.splice(cellLocation,0,cell)
+		workspace.children()[array[i]].insertAdjacentHTML(columnLocation,renderCell(cell))
 	}
-
-	grid.cellCount = grid.cells.length
-	
-	updateTools();
-	updateCellSize();	
+	updateGridUtility()
 }
 
-function addRight() {
-	let array = []
-	for (var i = 0; i <= grid.rows - 1; i++) {
-		array.push(grid.columns + (grid.columns * i) - 1)
+
+function removeColumn(index) {
+	if (grid.columns > 1) {
+		let left = index == "left",
+		columnSetLocation = left ? 0 : grid.columnSet.length - 1,
+		array = [];
+
+		for (var i = 0; i <= grid.rows - 1; i++) {
+			let columnsToPush = left ? i * grid.columns : grid.columns + (grid.columns * i) - 1;
+			array.push(columnsToPush);
+		}
+		
+		grid.columnSet.splice(columnSetLocation,1);
+		grid.columns = grid.columnSet.length;
+	  
+		for (var i = array.length - 1; i >= 0; i--) {
+			grid.cells.splice(array[i],1);
+			workspace.children()[array[i]].remove();
+		}
+		updateGridUtility()
 	}
+}
 
-	let newColumnCount = grid.columns + 1
-	const column = new Column(getSmallestAvailableIndex("columnSet"))
-	grid.columnSet.push(column)
-	grid.columns = grid.columnSet.length
-  
-
-	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(getSmallestAvailableIndex("columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i)
-
-		grid.cells.splice(array[i] + 1,0,cell)
-
-		workspace.children()[array[i]].insertAdjacentHTML('afterend',renderCell(cell))
+function removeRow(index) {
+	if (grid.rows > 1) {
+		let top = index == "top",
+		rowSetLocation = top ? 0 : grid.rowSet.length - 1;
+		
+		grid.rows = grid.rows - 1;
+		grid.rowSet.splice(rowSetLocation,1);
+	  
+		for (var i = grid.columns - 1; i >= 0; i--) {
+			let cellLocation = top ? 0 : grid.cells.length - 1;
+			grid.cells.splice(cellLocation, 1);
+			workspace.children()[cellLocation].remove();
+		}
+		updateGridUtility()
 	}
-	
-	grid.cellCount = grid.cells.length
-	
+}
+
+function updateGridUtility() {
+	grid.cellCount = grid.cells.length;
 	updateTools();
 	updateCellSize();
 }
 
-function removeLeft() {
-	if (grid.columns > 1) {
-		let array = []
-		for (var i = 0; i <= grid.rows - 1; i++) {
-			array.push(grid.columns * i)
-		}
-		
-		grid.columnSet.splice(0,1)
-		grid.columns = grid.columnSet.length
-		
-	  
-	  
-		for (var i = array.length - 1; i >= 0; i--) {
-			grid.cells.splice(array[i],1)
-			workspace.children()[array[i]].remove()
-		}
+function updateGridInput(e) {
+	const param = e.target,
+  updatedValue = param.value,
+  sign = grid[param.id] < updatedValue ? "add" : "remove";
+  
+  let magnitude = updatedValue - grid[param.id]
 
-		grid.cellCount = grid.cells.length
-		
-		updateTools();
-		updateCellSize();
-	}
-}
-
-function removeRight() {
-	if (grid.columns > 1) {
-		let array = []
-		for (var i = 0; i <= grid.rows - 1; i++) {
-			array.push(grid.columns + (grid.columns * i) - 1)
+	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
+		if (sign == "add") {
+			param.id == "columns" ? addColumn("right") : addRow("bottom")
+		} else {
+			param.id == "columns" ? removeColumn("right") : removeRow("bottom")
 		}
-		
-		grid.columnSet.splice(grid.columnSet.length - 1,1)
-		grid.columns = grid.columnSet.length
-	  
-		for (var i = array.length - 1; i >= 0; i--) {
-			grid.cells.splice(array[i],1)
-			workspace.children()[array[i]].remove()
-		}
-		
-		grid.cellCount = grid.cells.length
-
-		updateTools();
-		updateCellSize();
 	}
 }
 
@@ -281,10 +217,7 @@ function generateGrid() {
   diff = targetGridLen - currGridLen,
   counter = currGridLen;
   
-  
-
 	for (var i = 0; i <= diff - 1; i++) {
-		
 		const row = Math.floor(i/grid.columns),
 		column = i - (grid.columns * row),
 		cell = new Cell(column, row, grid.cells.length);
@@ -292,17 +225,7 @@ function generateGrid() {
 	  grid.cells.push(cell)
 	  workspace.append(renderCell(cell));
 	}
-	
-	grid.cellCount = grid.getCells
-
-  updateCellSize();
-  updateTools();
-};
-
-function removeCells() {
-  const target = workspace.children().last().attr("data");
-  grid.cells.length = grid.cells.length - 1 
-  workspace.children().last().detach();
+	updateGridUtility()
 };
 
 function renderCell(cell) {
@@ -347,18 +270,20 @@ function renderCell(cell) {
   `)
 }
 
-function updateSlider() {
-	$("#lens").css("width",`${val}%`)	
-	$("#lens").css("height",`${val}%`)
-	$("#lens").css("top",`${(100-val)/2}%`)	
-	$("#lens").css("left",`${(100-val)/2}%`)		
+function updateZoom() {
+	Object.assign(lens[0].style, {
+		width:`${val}%`,
+		height:`${val}%`,
+		top:`${(100-val)/2}%`,
+		left:`${(100-val)/2}%`
+	})
 	height = workspace.innerHeight()
 	width = workspace.innerWidth()
 }
 
 zoom.on("input change", function() {
   val = this.value;
-  updateSlider()
+  updateZoom()
 	updateCellSize();
 })
 
@@ -373,7 +298,6 @@ border.on("input change", function() {
 $("#borderColor").click(function(e){
   const color = e.target.innerText;
   let output = color == "white" ? "black" : "white"
-// console.log(e)
   e.target.innerText = output
   grid.borderColor = output;
   workspace.css("outline-color",output,"background",output);
@@ -391,54 +315,44 @@ function updateCellSize() {
   $(".cell").width(workspace.innerWidth()/grid.columns);
 };
 
-window.onresize = reportWindowSize;
-
-$("input[type='number']").on("change",function(e) {
-	const param = e.target;
-  const updatedValue = param.value;
-  const sign = grid[param.id] < updatedValue ? "add" : "remove";
-  const loc = param.id == "columns" ? "Right" : "Bottom";
-  let magnitude = updatedValue - grid[param.id]
-	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
-		window[`${sign}${loc}`]()
-	}
-  $(".nucleus").css("border-width",`${grid.border}px`);
-})
-
-updateTools();
-
 function updateTools() {
 	$("input#columns").val(grid.columns);
 	$("input#rows").val(grid.rows);
-	$("input#gridSize").val(grid.getCells);
+	$("input#gridSizeInput").val(grid.getCells);
 }
 
 function reportGridSize() {
 	console.log("Grid size: ", grid)
 }
 
-// Bindings
-$("button#addLeft").on("click",function(){addLeft()})
-$("button#addRight").on("click",function(){addRight()})
-$("button#removeLeft").on("click",function(){removeLeft()})
-$("button#removeRight").on("click",function(){removeRight()})
-$("button#addTop").on("click",function(){addTop()})
-$("button#addBottom").on("click",function(){addBottom()})
-$("button#removeTop").on("click",function(){removeTop()})
-$("button#removeBottom").on("click",function(){removeBottom()})
-$("#gridSize").on("click", function() {reportGridSize()})
+function toggleInteractive(e) {
+	const state = interactive ? "static" : "interactive"
+	e.target.innerText = state
+	$(".cell").toggleClass("interactive")
+	interactive = !interactive
+}
 
-// $(document).on("mousedown",".cell", function(e) {
-// 	const target = grid.cells.filter(e => e.index == this.dataset.cell)[0]
-// 	console.log(target)
-// })
+// Bindings
+$("button#addLeft").on("click",function(){addColumn("left")})
+$("button#addRight").on("click",function(){addColumn("right")})
+$("button#removeLeft").on("click",function(){removeColumn("left")})
+$("button#removeRight").on("click",function(){removeColumn("right")})
+$("button#addTop").on("click",function(){addRow("top")})
+$("button#addBottom").on("click",function(){addRow("bottom")})
+$("button#removeTop").on("click",function(){removeRow("top")})
+$("button#removeBottom").on("click",function(){removeRow("bottom")})
+$("#gridSize").on("click", function() {reportGridSize()})
+$("input[type='number']").on("change",function(e) {updateGridInput(e)})
+$("#toggleInteractive").on("click", function(e) {toggleInteractive(e)})
+
+window.onresize = reportWindowSize;
 
 // Drag and drop behavior
-let interactive = true
-if (interactive === true) {
-	// from https://javascript.info/mouse-drag-and-drop
-	$(document).on("mousedown",".cell", function(e) {
+// from https://javascript.info/mouse-drag-and-drop
+$(document).on("mousedown",".cell", function(e) {
+	if (interactive) {
 		const clickedCell = e.target.parentNode,
+		clickedCellIndex = Array.prototype.indexOf.call(workspace.children(),clickedCell),
 		cellDimensions = {
 			top: clickedCell.getBoundingClientRect().top, 
 			left: clickedCell.getBoundingClientRect().left
@@ -447,18 +361,15 @@ if (interactive === true) {
 	  	x: e.clientX - cellDimensions.left,
 	  	y: e.clientY - cellDimensions.top
 	  }
-	  let test = Array.prototype.indexOf.call(workspace.children(),clickedCell)
-	  console.log(test)
-	  let underlying = document.elementFromPoint(e.clientX,e.clientY).parentElement.dataset.cell,
-	  destination = null,
-		originAnchor = clickedCell.nextSibling.nextElementSibling
-		// console.log("c",clickedCell.dataset.cell,"u",underlying,"d",destination,"o",originAnchor.dataset.cell)
+
+	  let destination = document.elementFromPoint(e.clientX,e.clientY).parentElement
+	  let destinationCellIndex = Array.prototype.indexOf.call(workspace.children(),destination)
 		
 		$(".cell").toggleClass("focused")
 
 		let obj =  clickedCell.cloneNode(true);
 		Object.assign(obj.style, {
-			zIndex:1000,
+			zIndex: 1000,
 			position:"absolute",
 			left: event.pageX - shift.x + 'px',
 			top: event.pageY - shift.y + 'px'
@@ -475,11 +386,8 @@ if (interactive === true) {
 
 		function onMouseMove(event) {
 		  moveAt(event.pageX, event.pageY);
-		  underlying = document.elementFromPoint(event.pageX,event.pageY).parentElement.dataset.cell
-		  console.log(clickedCell.dataset.cell === underlying )
-		  destination = clickedCell.dataset.cell === underlying ? null : workspace.children()[underlying]
-			originAnchor = clickedCell.nextSibling.nextElementSibling
-		  // console.log("c",clickedCell.dataset.cell,"u",underlying,"d",destination ? destination.dataset.cell : null,"o",originAnchor.dataset.cell)
+		  destination = document.elementFromPoint(event.pageX,event.pageY).parentElement
+		  destinationCellIndex = Array.prototype.indexOf.call(workspace.children(),destination)
 		}
 	  
 	  document.addEventListener('mousemove', onMouseMove);
@@ -490,36 +398,29 @@ if (interactive === true) {
 	  	obj.hidden = true;
 		  let elemBelow = document.elementFromPoint(f.clientX, f.clientY);
 		  obj.hidden = false;
-	  
-	  	if (clickedCell.dataset.cell != underlying) {
-	  		if (destination != originAnchor) {
-		  		// console.log("not right neighbor")
-		  		workspaceNode.insertBefore(clickedCell,destination)
-			  	workspaceNode.insertBefore(destination,originAnchor)	
+	  	
+	  	if (clickedCellIndex != destinationCellIndex) {
+	  		if (destinationCellIndex != clickedCellIndex + 1) {
+	  			let backSwap = clickedCellIndex > destinationCellIndex ? 1 : 0
+	  			workspaceNode.insertBefore(workspace.children()[clickedCellIndex],workspace.children()[destinationCellIndex])
+	  			workspaceNode.insertBefore(workspace.children()[destinationCellIndex + backSwap],workspace.children()[clickedCellIndex + backSwap])		
 		  	} else {
-		  		// console.log("right neighbor")
-		  		// console.log(clickedCell.dataset.cell,destination.dataset.cell)
-		  		workspaceNode.insertBefore(clickedCell,destination)
-			  	workspaceNode.insertBefore(destination,clickedCell)	
+		  		workspaceNode.insertBefore(clickedCell,workspace.children()[destinationCellIndex])
+			  	workspaceNode.insertBefore(workspace.children()[destinationCellIndex],clickedCell)	
 		  	}
-	  	}	else {
-	  		console.log("catch")
-	  	}  	
+	  	}
 
 	  	$(".cell").toggleClass("focused")
 
 	  	let el = $("#virtual")[0]
 	    
 	    document.removeEventListener('mousemove', onMouseMove);
-	    canvas[0].removeChild(el)
+	    obj.remove()
 	    $(document).unbind('mouseup');
 	  });
-	})
+	}
+})
 
-	$(document).ondragstart = function() {
-	  return false;
-	};
-}
-
-import * from "./modules/test.js"
-test()
+$(document).ondragstart = function() {
+  return false;
+};

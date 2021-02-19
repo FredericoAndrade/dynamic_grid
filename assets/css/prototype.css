@@ -10,10 +10,10 @@ body{
 }
 #lens {
 	padding: 40px;	
-	// height: 135%;
-	// width: 135%;
-	// top: -17.5%;
-	// left: -17.5%;
+	height: 135%;
+	width: 135%;
+	top: -17.5%;
+	left: -17.5%;
 	box-sizing: border-box;
 	position: absolute;
 }
@@ -40,8 +40,8 @@ body{
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
 }
-.cell::focus{
-	background: red;
+.nucleus.interactive{
+	box-shadow: 0px 0px 0px 5px red inset;
 }
 .cell.focused {
 	opacity: .8;
@@ -52,6 +52,9 @@ body{
 .cell#virtual,
 .cell h1 {
 	pointer-events: none;
+}
+.cell#virtual .nucleus {
+	border-radius: 40px;
 }
 #canvas .cell .nucleus {
   width: 100%;
