@@ -72,4 +72,4 @@ function changeBorderWidth(grid) {
   workspace.css("outline-width",`${grid.border}px`);
 }
 
-export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom };
+export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth };
