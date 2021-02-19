@@ -1,4 +1,6 @@
-function addTop() {
+import { Grid, Column, Row, Cell } from "./modules/classes.js";
+
+function addTop(grid) {
 	const row = new Row(getSmallestAvailableIndex("rowSet"));
 	const newRowCount = grid.rows + 1;
 	grid.rowSet.unshift(row)
@@ -15,7 +17,7 @@ function addTop() {
 	grid.cellCount = grid.cells.length
 }
 
-function addBottom() {
+function addBottom(grid) {
 	const row = new Row(getSmallestAvailableIndex("rowSet"));
 	let newRowCount = grid.rows + 1
 	grid.rowSet.push(row)
@@ -31,7 +33,7 @@ function addBottom() {
 	updateCellSize();
 }
 
-function removeTop() {
+function removeTop(grid) {
 	if (grid.rows > 1) {
 
 		grid.rows = grid.rows - 1
@@ -47,7 +49,7 @@ function removeTop() {
 	}
 }
 
-function removeBottom() {
+function removeBottom(grid) {
 	if (grid.rows > 1) {
 		grid.rows = grid.rows - 1
 		grid.rowSet.splice(grid.rowSet.length - 1,1)
@@ -62,7 +64,7 @@ function removeBottom() {
 	}
 }
 
-function addLeft() {
+function addLeft(grid) {
 	let array = []
 	for (var i = 0; i <= grid.rows - 1; i++) {
 		array.push(grid.columns * i)
@@ -89,7 +91,7 @@ function addLeft() {
 	updateCellSize();	
 }
 
-function addRight() {
+function addRight(grid) {
 	let array = []
 	for (var i = 0; i <= grid.rows - 1; i++) {
 		array.push(grid.columns + (grid.columns * i) - 1)
@@ -115,7 +117,7 @@ function addRight() {
 	updateCellSize();
 }
 
-function removeLeft() {
+function removeLeft(grid) {
 	if (grid.columns > 1) {
 		let array = []
 		for (var i = 0; i <= grid.rows - 1; i++) {
@@ -139,7 +141,7 @@ function removeLeft() {
 	}
 }
 
-function removeRight() {
+function removeRight(grid) {
 	if (grid.columns > 1) {
 		let array = []
 		for (var i = 0; i <= grid.rows - 1; i++) {

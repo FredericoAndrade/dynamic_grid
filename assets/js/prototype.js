@@ -200,14 +200,14 @@ function reportGridSize() {
 }
 
 // Bindings
-$("button#addLeft").on("click",function(){editGrid.addLeft()})
-$("button#addRight").on("click",function(){editGrid.addRight()})
-$("button#removeLeft").on("click",function(){editGrid.removeLeft()})
-$("button#removeRight").on("click",function(){editGrid.removeRight()})
-$("button#addTop").on("click",function(){editGrid.addTop()})
-$("button#addBottom").on("click",function(){editGrid.addBottom()})
-$("button#removeTop").on("click",function(){editGrid.removeTop()})
-$("button#removeBottom").on("click",function(){editGrid.removeBottom()})
+$("button#addLeft").on("click",function(){editGrid.addLeft(grid)})
+$("button#addRight").on("click",function(){editGrid.addRight(grid)})
+$("button#removeLeft").on("click",function(){editGrid.removeLeft(grid)})
+$("button#removeRight").on("click",function(){editGrid.removeRight(grid)})
+$("button#addTop").on("click",function(){editGrid.addTop(grid)})
+$("button#addBottom").on("click",function(){editGrid.addBottom(grid)})
+$("button#removeTop").on("click",function(){editGrid.removeTop(grid)})
+$("button#removeBottom").on("click",function(){editGrid.removeBottom(grid)})
 $("#gridSize").on("click", function() {reportGridSize()})
 
 // $(document).on("mousedown",".cell", function(e) {
