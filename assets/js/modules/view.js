@@ -37,6 +37,15 @@ function reportGridSize(grid) {
 	console.log("Grid size: ", grid)
 }
 
+function toggleBorderColor(grid, e) {
+	const color = e.target.innerText;
+  let output = color == "white" ? "black" : "white"
+  e.target.innerText = output
+  grid.borderColor = output;
+  workspace.css("outline-color",output,"background",output);
+  $(".nucleus").css("border-color",output);
+}
+
 $("input[type='number']").on("change",function(grid, e) {
 	const param = e.target;
   const updatedValue = param.value;
@@ -49,11 +58,13 @@ $("input[type='number']").on("change",function(grid, e) {
   $(".nucleus").css("border-width",`${grid.border}px`);
 })
 
-zoom.on("input change", function(grid) {
-  val = this.value;
+function updateZoom(grid) {
+	val = this.value;
   updateSlider(val)
 	updateCellSize(grid);
-})
+}
+
+zoom.on("input change", function() {updateZoom(grid)})
 
 border.on("input change", function(grid) {
   borderVal = this.value;
@@ -63,15 +74,6 @@ border.on("input change", function(grid) {
   workspace.css("outline-width",`${grid.border}px`);
 })
 
-function toggleBorderColor(grid, e) {
-	const color = e.target.innerText;
-  let output = color == "white" ? "black" : "white"
-  e.target.innerText = output
-  grid.borderColor = output;
-  workspace.css("outline-color",output,"background",output);
-  $(".nucleus").css("border-color",output);
-}
 
-$("#borderColor").on("click",toggleBorderColor(grid))
 
 export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize };
