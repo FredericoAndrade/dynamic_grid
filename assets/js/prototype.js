@@ -4,11 +4,9 @@ import * as editGrid from "./modules/grid.js";
 import { renderCell } from "./modules/utilities.js";
 import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize } from "./modules/view.js";
 
-let canvas = $("#canvas"),
+const canvas = $("#canvas"),
 workspace = $("#workspace"),
 lens = $("#lens"),
-height,
-width,
 zoom = $("#zoom"),
 border = $("#border")
 
