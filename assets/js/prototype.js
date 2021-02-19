@@ -1,5 +1,5 @@
-import { Grid, Column, Row, Cell } from "./modules/classes.js";
 "use strict";
+import { Grid, Column, Row, Cell } from "./modules/classes.js";
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),

@@ -17,13 +17,13 @@ class Grid {
 
 class Column {
 	constructor(index) {
-		this.index = index
+		this.index = index;
 	}
 }
 
 class Row {
 	constructor(index) {
-		this.index = index
+		this.index = index;
 	}
 }
 
@@ -43,7 +43,7 @@ class Cell {
   	return this.getAddress();
   }
   getAddress() {
-  	return( `c${this.column}r${this.row}`)
+  	return( `c${this.column}r${this.row}`);
   }
   getRandomColor() {
 	  const letters = "0123456789ABCDEF";
@@ -55,4 +55,4 @@ class Cell {
 	};
 };
 
-export { Grid, Column, Row, Cell }
+export { Grid, Column, Row, Cell };
