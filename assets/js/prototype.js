@@ -1,4 +1,4 @@
-import defaultExport from "./modules/test.js";
+import { Grid, Column, Row, Cell } from "./modules/test.js";
 "use strict";
 
 let canvas = $("#canvas"),
