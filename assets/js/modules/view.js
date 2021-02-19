@@ -52,7 +52,7 @@ function updateZoom(grid, e) {
 	updateCellSize(grid);
 }
 
-$("input[type='number']").on("change",function(grid, e) {
+function inputGridChange(e, grid) {
 	console.log(e)
 	const param = e.target;
   const updatedValue = param.value;
@@ -63,7 +63,7 @@ $("input[type='number']").on("change",function(grid, e) {
 		window[`${sign}${loc}`]()
 	}
   $(".nucleus").css("border-width",`${grid.border}px`);
-})
+}
 
 function changeBorderWidth(grid, e) {
 	borderVal = e.target.value;
@@ -73,4 +73,4 @@ function changeBorderWidth(grid, e) {
   workspace.css("outline-width",`${grid.border}px`);
 }
 
-export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth };
+export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom, changeBorderWidth, inputGridChange };
