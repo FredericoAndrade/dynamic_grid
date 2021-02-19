@@ -1,6 +1,8 @@
 import { Grid, Column, Row, Cell } from "./classes.js";
 import { getSmallestAvailableIndex, renderCell } from "./utilities.js"
 
+const workspace = $("#workspace")
+
 function addTop(grid) {
 	const row = new Row(getSmallestAvailableIndex(grid,"rowSet"));
 	const newRowCount = grid.rows + 1;
