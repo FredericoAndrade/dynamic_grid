@@ -71,6 +71,7 @@ $("button#removeBottom").on("click",function(){editGrid.removeBottom(grid)})
 $("#gridSize").on("click", function() {reportGridSize(grid)})
 $("#borderColor").on("click",function(e) {toggleBorderColor(grid, e)})
 zoom.on("input change", function(e) {updateZoom(grid)})
+border.on("input change", function() {changeBorderWidth(grid)})
 
 // $(document).on("mousedown",".cell", function(e) {
 // 	const target = grid.cells.filter(e => e.index == this.dataset.cell)[0]

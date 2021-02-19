@@ -64,12 +64,12 @@ $("input[type='number']").on("change",function(grid, e) {
   $(".nucleus").css("border-width",`${grid.border}px`);
 })
 
-border.on("input change", function(grid) {
-  borderVal = this.value;
+function changeBorderWidth(grid) {
+	borderVal = this.value;
   grid.border = this.value;
   $(".buttonGroup#borderGroup input[type='text']")[0].value = this.value
   $(".nucleus").css("border-width",`${grid.border}px`);
   workspace.css("outline-width",`${grid.border}px`);
-})
+}
 
 export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom };
