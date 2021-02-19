@@ -46,7 +46,7 @@ function toggleBorderColor(grid, e) {
   $(".nucleus").css("border-color",output);
 }
 
-function updateZoom(grid, val) {
+function updateZoom(grid) {
 	val = this.value;
   updateSlider(val)
 	updateCellSize(grid);
