@@ -1,6 +1,5 @@
 "use strict";
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
-
 import * as editGrid from "./modules/grid.js";
 
 let canvas = $("#canvas"),
