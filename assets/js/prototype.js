@@ -354,7 +354,7 @@ updateTools();
 function updateTools() {
 	$("input#columns").val(grid.columns);
 	$("input#rows").val(grid.rows);
-	$("input#gridSize").val(grid.getCells);
+	$("input#gridSizeReport").val(grid.getCells);
 }
 
 function reportGridSize() {
