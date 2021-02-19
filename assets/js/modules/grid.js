@@ -1,6 +1,6 @@
 import { Grid, Column, Row, Cell } from "./classes.js";
 import { getSmallestAvailableIndex, renderCell } from "./utilities.js"
-import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize } from "./view.js";
+import { updateCellSize, updateTools } from "./view.js";
 
 const workspace = $("#workspace")
 

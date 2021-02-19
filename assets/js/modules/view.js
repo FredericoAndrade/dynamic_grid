@@ -1,10 +1,11 @@
 const workspace = $("#workspace"),
 zoom = $("#zoom"),
 border = $("#border")
+
 let borderVal = border.val,
-val = zoom.val()
+val = zoom.val(),
 height,
-width,
+width
 
 function updateSlider(val) {
 	$("#lens").css("width",`${val}%`)	
