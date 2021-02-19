@@ -1,4 +1,4 @@
-function getSmallestAvailableIndex(axis) {
+function getSmallestAvailableIndex(grid, axis) {
 	let array = []
 	for (var i = grid[axis].length - 1; i >= 0; i--) {
 		array.push(grid[axis][i].index)
