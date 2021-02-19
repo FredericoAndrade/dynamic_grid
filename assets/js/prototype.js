@@ -358,7 +358,6 @@ function updateTools() {
 }
 
 function reportGridSize() {
-	console.log("bye")
 	console.log("Grid size: ", grid)
 }
 
@@ -371,7 +370,7 @@ $("button#addTop").on("click",function(){addTop()})
 $("button#addBottom").on("click",function(){addBottom()})
 $("button#removeTop").on("click",function(){removeTop()})
 $("button#removeBottom").on("click",function(){removeBottom()})
-$("#gridSize").on("click", function() {console.log("hi");reportGridSize()})
+$("#gridSize").on("click", function() {reportGridSize()})
 
 // $(document).on("mousedown",".cell", function(e) {
 // 	const target = grid.cells.filter(e => e.index == this.dataset.cell)[0]
