@@ -1,3 +1,4 @@
+import default from "./modules/test.js"
 "use strict";
 
 let canvas = $("#canvas"),
@@ -521,5 +522,5 @@ if (interactive === true) {
 	};
 }
 
-import * from "./modules/test.js"
-test()
+
+test("hi")
