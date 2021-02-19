@@ -52,7 +52,7 @@ function updateZoom(grid, e) {
 	updateCellSize(grid);
 }
 
-function inputGridChange(e, grid) {
+function inputGridChange(grid, e) {
 	console.log(e)
 	const param = e.target;
   const updatedValue = param.value;
