@@ -47,8 +47,7 @@ function toggleBorderColor(grid, e) {
 }
 
 function updateZoom(grid, e) {
-	console.log(this, e)
-	val = this.value;
+	val = e.target.value;
   updateSlider(val)
 	updateCellSize(grid);
 }
@@ -67,10 +66,9 @@ $("input[type='number']").on("change",function(grid, e) {
 })
 
 function changeBorderWidth(grid, e) {
-	console.log(this, e)
-	borderVal = this.value;
-  grid.border = this.value;
-  $(".buttonGroup#borderGroup input[type='text']")[0].value = this.value
+	borderVal = e.target.value;
+  grid.border = e.target.value;
+  $(".buttonGroup#borderGroup input[type='text']")[0].value = e.target.value
   $(".nucleus").css("border-width",`${grid.border}px`);
   workspace.css("outline-width",`${grid.border}px`);
 }
