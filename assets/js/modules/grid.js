@@ -1,14 +1,15 @@
 import { Grid, Column, Row, Cell } from "./classes.js";
+import { getSmallestAvailableIndex, renderCell } from "./utilities.js"
 
 function addTop(grid) {
-	const row = new Row(getSmallestAvailableIndex("rowSet"));
+	const row = new Row(getSmallestAvailableIndex(grid,"rowSet"));
 	const newRowCount = grid.rows + 1;
 	grid.rowSet.unshift(row)
 	grid.rows = newRowCount
   updateTools();
   
 	for (var i = grid.columns - 1; i >= 0; i--) {
-		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount + i)
+		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex(grid,"rowSet") - 1, grid.cellCount + i)
 		grid.cells.unshift(cell)
 		workspace.children()[0].insertAdjacentHTML('beforebegin',renderCell(cell))
 	}
@@ -18,14 +19,14 @@ function addTop(grid) {
 }
 
 function addBottom(grid) {
-	const row = new Row(getSmallestAvailableIndex("rowSet"));
+	const row = new Row(getSmallestAvailableIndex(grid,"rowSet"));
 	let newRowCount = grid.rows + 1
 	grid.rowSet.push(row)
 	grid.rows = newRowCount
   updateTools();
 
 	for (var i = 0; i <= grid.columns - 1; i++) {
-		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount)
+		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex(grid,"rowSet") - 1, grid.cellCount)
 		grid.cells.push(cell)
 		grid.cellCount = grid.cells.length
 		workspace.children()[workspace.children().length - 1].insertAdjacentHTML('afterend',renderCell(cell))
@@ -71,14 +72,14 @@ function addLeft(grid) {
 	}
 
 	let newColumnCount = grid.columns + 1
-	const column = new Column(getSmallestAvailableIndex("columnSet"))
+	const column = new Column(getSmallestAvailableIndex(grid,"columnSet"))
 	grid.columnSet.unshift(column)
 	grid.columns = grid.columnSet.length
   
   
 
 	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(getSmallestAvailableIndex("columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i)
+		let cell = new Cell(getSmallestAvailableIndex(grid,"columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i)
 
 		grid.cells.splice(array[i],0,cell)
 
@@ -98,13 +99,13 @@ function addRight(grid) {
 	}
 
 	let newColumnCount = grid.columns + 1
-	const column = new Column(getSmallestAvailableIndex("columnSet"))
+	const column = new Column(getSmallestAvailableIndex(grid,"columnSet"))
 	grid.columnSet.push(column)
 	grid.columns = grid.columnSet.length
   
 
 	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(getSmallestAvailableIndex("columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i)
+		let cell = new Cell(getSmallestAvailableIndex(grid,"columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i)
 
 		grid.cells.splice(array[i] + 1,0,cell)
 

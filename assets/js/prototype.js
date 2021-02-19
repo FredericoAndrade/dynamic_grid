@@ -1,6 +1,7 @@
 "use strict";
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
 import * as editGrid from "./modules/grid.js";
+import { renderCell } from "./modules/utilities.js";
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -49,23 +50,13 @@ const grid = new Grid(4,3,2);
   }()
 );
 
-function getSmallestAvailableIndex(axis) {
-	let array = []
-	for (var i = grid[axis].length - 1; i >= 0; i--) {
-		array.push(grid[axis][i].index)
-	}
-	return Math.max(...array) + 1;
-}
-
 function generateGrid() {
   const currGridLen = workspace.children().length,
   targetGridLen = grid.getCells,
   diff = targetGridLen - currGridLen,
   counter = currGridLen;
-  
-  
-
-	for (var i = 0; i <= diff - 1; i++) {
+ 
+ 	for (var i = 0; i <= diff - 1; i++) {
 		
 		const row = Math.floor(i/grid.columns),
 		column = i - (grid.columns * row),
@@ -80,54 +71,6 @@ function generateGrid() {
   updateCellSize();
   updateTools();
 };
-
-function removeCells() {
-  const target = workspace.children().last().attr("data");
-  grid.cells.length = grid.cells.length - 1 
-  workspace.children().last().detach();
-};
-
-function renderCell(cell) {
-	return(
-	`
-    <div class="cell" data-cell="${cell.index}" data-column="${cell.column}" data-row="${cell.row}"
-    style="
-      height:${cell.height}px;
-      width: ${cell.width}px;
-      background:${cell.color};
-      "
-    >
-      <div class="nucleus"
-        style="
-        border-width:${grid.border}px;
-        border-color:${grid.borderColor};
-        "
-      >
-      <!--table>
-	      <thead>
-	      	<tr>
-		      	<td>id</td>
-		      	<td>adr</td>
-		      	<td>col</td>
-		      	<td>row</td>
-		      	<td>hex</td>
-	      	</tr>
-	      </thead>
-	      <tbody>
-		      <tr>
-		      	<td>${cell.index}</td>
-		      	<td>${cell.address}</td>
-		      	<td>${cell.column}</td>
-		      	<td>${cell.row}</td>
-		      	<td>${cell.color}</td>
-	      	</tr>
-	      </tbody>
-      </table-->
-      <h1>${cell.index}</h1>
-      </div>
-    </div>
-  `)
-}
 
 function updateSlider() {
 	$("#lens").css("width",`${val}%`)	
