@@ -64,8 +64,6 @@ $("input[type='number']").on("change",function(grid, e) {
   $(".nucleus").css("border-width",`${grid.border}px`);
 })
 
-
-
 border.on("input change", function(grid) {
   borderVal = this.value;
   grid.border = this.value;
@@ -73,7 +71,5 @@ border.on("input change", function(grid) {
   $(".nucleus").css("border-width",`${grid.border}px`);
   workspace.css("outline-width",`${grid.border}px`);
 })
-
-
 
 export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize, toggleBorderColor, updateZoom };
