@@ -1,3 +1,5 @@
+import { addBottom, addRight, removeBottom, removeRight } from "./grid.js";
+
 const workspace = $("#workspace"),
 zoom = $("#zoom"),
 border = $("#border")
