@@ -358,7 +358,7 @@ function updateTools() {
 }
 
 function reportGridSize() {
-	console.log("hi")
+	console.log("bye")
 	console.log("Grid size: ", grid)
 }
 
