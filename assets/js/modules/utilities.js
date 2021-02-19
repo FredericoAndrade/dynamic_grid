@@ -12,7 +12,7 @@ function getSmallestAvailableIndex(axis) {
 //   workspace.children().last().detach();
 // };
 
-function renderCell(cell) {
+function renderCell(cell, grid) {
 	return(
 	`
     <div class="cell" data-cell="${cell.index}" data-column="${cell.column}" data-row="${cell.row}"

@@ -11,7 +11,7 @@ function addTop(grid) {
 	for (var i = grid.columns - 1; i >= 0; i--) {
 		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex(grid,"rowSet") - 1, grid.cellCount + i)
 		grid.cells.unshift(cell)
-		workspace.children()[0].insertAdjacentHTML('beforebegin',renderCell(cell))
+		workspace.children()[0].insertAdjacentHTML('beforebegin',renderCell(cell, grid))
 	}
 
 	updateCellSize();
@@ -29,7 +29,7 @@ function addBottom(grid) {
 		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex(grid,"rowSet") - 1, grid.cellCount)
 		grid.cells.push(cell)
 		grid.cellCount = grid.cells.length
-		workspace.children()[workspace.children().length - 1].insertAdjacentHTML('afterend',renderCell(cell))
+		workspace.children()[workspace.children().length - 1].insertAdjacentHTML('afterend',renderCell(cell, grid))
 	}
 	updateCellSize();
 }
@@ -83,7 +83,7 @@ function addLeft(grid) {
 
 		grid.cells.splice(array[i],0,cell)
 
-		workspace.children()[array[i]].insertAdjacentHTML('beforebegin',renderCell(cell))
+		workspace.children()[array[i]].insertAdjacentHTML('beforebegin',renderCell(cell, grid))
 	}
 
 	grid.cellCount = grid.cells.length
@@ -109,7 +109,7 @@ function addRight(grid) {
 
 		grid.cells.splice(array[i] + 1,0,cell)
 
-		workspace.children()[array[i]].insertAdjacentHTML('afterend',renderCell(cell))
+		workspace.children()[array[i]].insertAdjacentHTML('afterend',renderCell(cell, grid))
 	}
 	
 	grid.cellCount = grid.cells.length

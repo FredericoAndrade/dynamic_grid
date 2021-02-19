@@ -63,7 +63,7 @@ function generateGrid() {
 		cell = new Cell(column, row, grid.cells.length);
 
 	  grid.cells.push(cell)
-	  workspace.append(renderCell(cell));
+	  workspace.append(renderCell(cell, grid));
 	}
 	
 	grid.cellCount = grid.getCells
