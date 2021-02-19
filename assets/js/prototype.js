@@ -69,6 +69,7 @@ $("button#addBottom").on("click",function(){editGrid.addBottom(grid)})
 $("button#removeTop").on("click",function(){editGrid.removeTop(grid)})
 $("button#removeBottom").on("click",function(){editGrid.removeBottom(grid)})
 $("#gridSize").on("click", function() {reportGridSize(grid)})
+$("#borderColor").on("click",function() {toggleBorderColor(grid)})
 
 // $(document).on("mousedown",".cell", function(e) {
 // 	const target = grid.cells.filter(e => e.index == this.dataset.cell)[0]

@@ -63,13 +63,15 @@ border.on("input change", function(grid) {
   workspace.css("outline-width",`${grid.border}px`);
 })
 
-$("#borderColor").click(function(e){
-  const color = e.target.innerText;
+function toggleBorderColor(grid, e) {
+	const color = e.target.innerText;
   let output = color == "white" ? "black" : "white"
   e.target.innerText = output
   grid.borderColor = output;
   workspace.css("outline-color",output,"background",output);
   $(".nucleus").css("border-color",output);
-})
+}
+
+$("#borderColor").on("click",toggleBorderColor(grid))
 
 export { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize };
