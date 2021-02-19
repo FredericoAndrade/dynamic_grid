@@ -1,4 +1,4 @@
-import { Grid, Column, Row, Cell } from "./modules/classes.js";
+import { Grid, Column, Row, Cell } from "./classes.js";
 
 function addTop(grid) {
 	const row = new Row(getSmallestAvailableIndex("rowSet"));
