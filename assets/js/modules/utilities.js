@@ -6,12 +6,6 @@ function getSmallestAvailableIndex(grid, axis) {
 	return Math.max(...array) + 1;
 }
 
-// function removeCells(grid) {
-//   const target = workspace.children().last().attr("data");
-//   grid.cells.length = grid.cells.length - 1 
-//   workspace.children().last().detach();
-// };
-
 function renderCell(cell, grid) {
 	return(
 	`

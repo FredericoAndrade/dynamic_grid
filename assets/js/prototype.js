@@ -2,6 +2,7 @@
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
 import * as editGrid from "./modules/grid.js";
 import { renderCell } from "./modules/utilities.js";
+import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize } from "./modules/view.js";
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -9,11 +10,9 @@ lens = $("#lens"),
 height,
 width,
 zoom = $("#zoom"),
-border = $("#border"),
-borderVal = border.val,
-val = zoom.val();
+border = $("#border")
 
-updateSlider()
+updateSlider(zoom.val())
 
 // functions
 // Rows: addTop, addBottom, removeTop, removeBottom
@@ -68,79 +67,12 @@ function generateGrid() {
 	
 	grid.cellCount = grid.getCells
 
-  updateCellSize();
-  updateTools();
-};
-
-function updateSlider() {
-	$("#lens").css("width",`${val}%`)	
-	$("#lens").css("height",`${val}%`)
-	$("#lens").css("top",`${(100-val)/2}%`)	
-	$("#lens").css("left",`${(100-val)/2}%`)		
-	height = workspace.innerHeight()
-	width = workspace.innerWidth()
-}
-
-zoom.on("input change", function() {
-  val = this.value;
-  updateSlider()
-	updateCellSize();
-})
-
-border.on("input change", function() {
-  borderVal = this.value;
-  grid.border = this.value;
-  $(".buttonGroup#borderGroup input[type='text']")[0].value = this.value
-  $(".nucleus").css("border-width",`${grid.border}px`);
-  workspace.css("outline-width",`${grid.border}px`);
-})
-
-$("#borderColor").click(function(e){
-  const color = e.target.innerText;
-  let output = color == "white" ? "black" : "white"
-// console.log(e)
-  e.target.innerText = output
-  grid.borderColor = output;
-  workspace.css("outline-color",output,"background",output);
-  $(".nucleus").css("border-color",output);
-})
-
-function reportWindowSize() {
-  height = window.innerHeight;
-  width = window.innerWidth;
-  updateCellSize();
-};
-
-function updateCellSize() {
-  $(".cell").height(workspace.innerHeight()/grid.rows);
-  $(".cell").width(workspace.innerWidth()/grid.columns);
+  updateCellSize(grid);
+  updateTools(grid);
 };
 
 window.onresize = reportWindowSize;
-
-$("input[type='number']").on("change",function(e) {
-	const param = e.target;
-  const updatedValue = param.value;
-  const sign = grid[param.id] < updatedValue ? "add" : "remove";
-  const loc = param.id == "columns" ? "Right" : "Bottom";
-  let magnitude = updatedValue - grid[param.id]
-	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
-		window[`${sign}${loc}`]()
-	}
-  $(".nucleus").css("border-width",`${grid.border}px`);
-})
-
-updateTools();
-
-function updateTools() {
-	$("input#columns").val(grid.columns);
-	$("input#rows").val(grid.rows);
-	$("input#gridSizeReport").val(grid.getCells);
-}
-
-function reportGridSize() {
-	console.log("Grid size: ", grid)
-}
+updateTools(grid);
 
 // Bindings
 $("button#addLeft").on("click",function(){editGrid.addLeft(grid)})
@@ -151,7 +83,7 @@ $("button#addTop").on("click",function(){editGrid.addTop(grid)})
 $("button#addBottom").on("click",function(){editGrid.addBottom(grid)})
 $("button#removeTop").on("click",function(){editGrid.removeTop(grid)})
 $("button#removeBottom").on("click",function(){editGrid.removeBottom(grid)})
-$("#gridSize").on("click", function() {reportGridSize()})
+$("#gridSize").on("click", function() {reportGridSize(grid)})
 
 // $(document).on("mousedown",".cell", function(e) {
 // 	const target = grid.cells.filter(e => e.index == this.dataset.cell)[0]

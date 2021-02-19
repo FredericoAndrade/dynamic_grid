@@ -1,5 +1,6 @@
 import { Grid, Column, Row, Cell } from "./classes.js";
 import { getSmallestAvailableIndex, renderCell } from "./utilities.js"
+import { updateSlider, reportWindowSize, updateCellSize, updateTools, reportGridSize } from "./view.js";
 
 const workspace = $("#workspace")
 
@@ -8,7 +9,7 @@ function addTop(grid) {
 	const newRowCount = grid.rows + 1;
 	grid.rowSet.unshift(row)
 	grid.rows = newRowCount
-  updateTools();
+  updateTools(grid);
   
 	for (var i = grid.columns - 1; i >= 0; i--) {
 		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex(grid,"rowSet") - 1, grid.cellCount + i)
@@ -16,7 +17,7 @@ function addTop(grid) {
 		workspace.children()[0].insertAdjacentHTML('beforebegin',renderCell(cell, grid))
 	}
 
-	updateCellSize();
+	updateCellSize(grid);
 	grid.cellCount = grid.cells.length
 }
 
@@ -25,7 +26,7 @@ function addBottom(grid) {
 	let newRowCount = grid.rows + 1
 	grid.rowSet.push(row)
 	grid.rows = newRowCount
-  updateTools();
+  updateTools(grid);
 
 	for (var i = 0; i <= grid.columns - 1; i++) {
 		let cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex(grid,"rowSet") - 1, grid.cellCount)
@@ -33,7 +34,7 @@ function addBottom(grid) {
 		grid.cellCount = grid.cells.length
 		workspace.children()[workspace.children().length - 1].insertAdjacentHTML('afterend',renderCell(cell, grid))
 	}
-	updateCellSize();
+	updateCellSize(grid);
 }
 
 function removeTop(grid) {
@@ -41,14 +42,14 @@ function removeTop(grid) {
 
 		grid.rows = grid.rows - 1
 		grid.rowSet.splice(0,1)
-	  updateTools();
+	  updateTools(grid);
 	  
 		for (var i = grid.columns - 1; i >= 0; i--) {
 			grid.cells.splice(0,1)
 			workspace.children()[0].remove()
 		}
 		grid.cellCount = grid.cells.length
-		updateCellSize();
+		updateCellSize(grid);
 	}
 }
 
@@ -56,14 +57,14 @@ function removeBottom(grid) {
 	if (grid.rows > 1) {
 		grid.rows = grid.rows - 1
 		grid.rowSet.splice(grid.rowSet.length - 1,1)
-	  updateTools();
+	  updateTools(grid);
 	  
 		for (var i = grid.columns - 1; i >= 0; i--) {
 			grid.cells.splice(grid.cells.length - 1,1)
 			workspace.children()[grid.cells.length - 1].remove()
 		}
 		grid.cellCount = grid.cells.length
-		updateCellSize();
+		updateCellSize(grid);
 	}
 }
 
@@ -90,8 +91,8 @@ function addLeft(grid) {
 
 	grid.cellCount = grid.cells.length
 	
-	updateTools();
-	updateCellSize();	
+	updateTools(grid);
+	updateCellSize(grid);	
 }
 
 function addRight(grid) {
@@ -116,8 +117,8 @@ function addRight(grid) {
 	
 	grid.cellCount = grid.cells.length
 	
-	updateTools();
-	updateCellSize();
+	updateTools(grid);
+	updateCellSize(grid);
 }
 
 function removeLeft(grid) {
@@ -139,8 +140,8 @@ function removeLeft(grid) {
 
 		grid.cellCount = grid.cells.length
 		
-		updateTools();
-		updateCellSize();
+		updateTools(grid);
+		updateCellSize(grid);
 	}
 }
 
@@ -161,8 +162,8 @@ function removeRight(grid) {
 		
 		grid.cellCount = grid.cells.length
 
-		updateTools();
-		updateCellSize();
+		updateTools(grid);
+		updateCellSize(grid);
 	}
 }
 
