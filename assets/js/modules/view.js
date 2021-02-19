@@ -54,6 +54,7 @@ function updateZoom(grid) {
 }
 
 $("input[type='number']").on("change",function(grid, e) {
+	console.log(e)
 	const param = e.target;
   const updatedValue = param.value;
   const sign = grid[param.id] < updatedValue ? "add" : "remove";
