@@ -63,7 +63,7 @@ function inputGridChange(grid, e) {
   let target = sign+loc
 
 	for (var i = Math.abs(magnitude) - 1; i >= 0; i--) {
-		window[sign+loc]()
+		window[addBottom]()
 	}
   $(".nucleus").css("border-width",`${grid.border}px`);
 }
