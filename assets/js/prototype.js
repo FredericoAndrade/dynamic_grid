@@ -524,3 +524,4 @@ if (interactive === true) {
 
 
 test("hi")
+console.log("test")
