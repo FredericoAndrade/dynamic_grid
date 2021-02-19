@@ -1,6 +1,6 @@
 "use strict";
 import { Grid, Column, Row, Cell } from "./modules/classes.js";
-import * from "./modules/classes.js";
+import * as editGrid from "./modules/grid.js";
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -200,14 +200,14 @@ function reportGridSize() {
 }
 
 // Bindings
-$("button#addLeft").on("click",function(){addLeft()})
-$("button#addRight").on("click",function(){addRight()})
-$("button#removeLeft").on("click",function(){removeLeft()})
-$("button#removeRight").on("click",function(){removeRight()})
-$("button#addTop").on("click",function(){addTop()})
-$("button#addBottom").on("click",function(){addBottom()})
-$("button#removeTop").on("click",function(){removeTop()})
-$("button#removeBottom").on("click",function(){removeBottom()})
+$("button#addLeft").on("click",function(){editGrid.addLeft()})
+$("button#addRight").on("click",function(){editGrid.addRight()})
+$("button#removeLeft").on("click",function(){editGrid.removeLeft()})
+$("button#removeRight").on("click",function(){editGrid.removeRight()})
+$("button#addTop").on("click",function(){editGrid.addTop()})
+$("button#addBottom").on("click",function(){editGrid.addBottom()})
+$("button#removeTop").on("click",function(){editGrid.removeTop()})
+$("button#removeBottom").on("click",function(){editGrid.removeBottom()})
 $("#gridSize").on("click", function() {reportGridSize()})
 
 // $(document).on("mousedown",".cell", function(e) {
