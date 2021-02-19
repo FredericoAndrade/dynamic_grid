@@ -59,4 +59,4 @@ class Cell {
 	};
 };
 
-export { Grid, Column, Row, Cell as default }
+export { Grid, Column, Row, Cell }
