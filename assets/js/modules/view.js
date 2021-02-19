@@ -47,6 +47,7 @@ function toggleBorderColor(grid, e) {
 }
 
 function updateZoom(grid) {
+	console.log(this)
 	val = this.value;
   updateSlider(val)
 	updateCellSize(grid);
