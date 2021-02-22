@@ -1,5 +1,5 @@
 "use strict";
-// bug with duplicate cell ids when adding left, right, removing left and adding left again; consider getSmallestIndex(?)
+//bug where removing columns does not remove the correct cells from grid.cells
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -22,8 +22,6 @@ class Grid {
     this.columns = columns;
     this.rows = rows;
     this.border = border;
-    this.origin = 1;
-    this.cellCount = columns * rows;
     this.borderColor = "white";
   };
   get getCells() {
@@ -100,20 +98,20 @@ const grid = new Grid(4,3,2);
 function addRow(index) {
 	const row = new Row(getSmallestAvailableIndex("rowSet")),
 	top = index == "top",
-	rowLocation = top ? "beforebegin" : "afterend",
-	locationRoot = top ? 0 : workspace.children().length - 1;
+	rowLocation = top ? "beforebegin" : "afterend";
+	
 	
 	top ? grid.rowSet.unshift(row) : grid.rowSet.push(row)
 	grid.rows = grid.rows + 1
-	for (var i = grid.columns - 1; i >=  0; i--) {
-		const column = i;
-		let cellindex = top ? grid.cellCount + 1 : grid.cellCount,
-		cell = new Cell(grid.columnSet[column].index, row.index, grid.cellCount + column)
+	for (var i = 0; i <=  grid.columns - 1; i++) {
+		const column = i,
+		cellIndex = getSmallestAvailableIndex("cells"),
+		locationRoot = top ? i : workspace.children().length - 1,
+		cell = new Cell(grid.columnSet[column].index, row.index, cellIndex)
 
-		top ? grid.cells.unshift(cell) : grid.cells.push(cell) // add to grid
-
+		top ? grid.cells.splice(i, 0, cell) : grid.cells.splice(workspace.children().length, 0, cell) ;// add to grid
 		top ? grid.columnSet[column].cells.unshift(cell) : grid.columnSet[i].cells.push(cell) // add to columns
-	  row.cells.unshift(cell) // add to rows
+	  row.cells.push(cell) // add to rows
 		workspace.children()[locationRoot].insertAdjacentHTML(rowLocation,renderCell(cell)) // add to dom
 	}
 	updateGridUtility()
@@ -124,7 +122,6 @@ function addColumn(index) {
 	const newColumnIndex = getSmallestAvailableIndex("columnSet"),
 	column = new Column(newColumnIndex),
 	left = index == "left",
-	newColumnCount = grid.columns + 1,
 	columnLocation = left ? "beforebegin" : "afterend";
 
 	let array = []
@@ -136,15 +133,16 @@ function addColumn(index) {
 	left ? grid.columnSet.unshift(column) : grid.columnSet.push(column)
 	grid.columns = grid.columnSet.length
 
-	for (var i = array.length - 1; i >= 0; i--) {
-		const row = i;
-		let cell = new Cell(column.index, grid.rowSet[row].index, grid.cellCount + row),
-		cellLocation = left ? array[row] : array[row] + 1;
+	for (var i = 0; i <= array.length - 1; i++) {
+		const row = i,
+		cellIndex = getSmallestAvailableIndex("cells"),
+		cell = new Cell(column.index, grid.rowSet[row].index, cellIndex),
+		cellLocation = left ? array[row] + row : array[row] + 1 + row;
 		
 		grid.cells.splice(cellLocation, 0, cell) // add to grid
-		column.cells.unshift(cell) // add to columns
+		column.cells.push(cell) // add to columns
 	  left ? grid.rowSet[row].cells.unshift(cell) : grid.rowSet[row].cells.push(cell) // add to rows
-		workspace.children()[array[row]].insertAdjacentHTML(columnLocation,renderCell(cell)) // add to dom
+		workspace.children()[array[row]+i].insertAdjacentHTML(columnLocation,renderCell(cell)) // add to dom
 	}
 	updateGridUtility()
 }
@@ -161,13 +159,15 @@ function removeColumn(index) {
 			let columnsToPush = left ? (i * grid.columns) : (grid.columns + (grid.columns * i) - 1);
 			array.push(columnsToPush);
 		}
-		
+
+		let a2 = grid.cells.filter(e => e.column == column.index)
+	
 		grid.columnSet.splice(columnSetLocation,1);
 		grid.columns = grid.columnSet.length;
-		for (var i = array.length - 1; i >= 0; i--) {
+		for (var i = 0; i <= array.length - 1; i++) {
 			grid.rowSet[i].cells = grid.rowSet[i].cells.filter(e => e.column !== column.index)
-			grid.cells.splice(array[i],1);
-			workspace.children()[array[i]].remove();
+			grid.cells.splice(array[i] - i,1);
+			workspace.children()[array[i] - i].remove();
 		}
 		updateGridUtility()
 	}
@@ -192,7 +192,6 @@ function removeRow(index) {
 }
 
 function updateGridUtility() {
-	grid.cellCount = grid.cells.length;
 	updateTools();
 	updateCellSize();
 }
@@ -219,7 +218,6 @@ function getSmallestAvailableIndex(channel) {
 	for (var i = grid[channel].length - 1; i >= 0; i--) {
 		array.push(grid[channel][i].index)
 	}
-	// console.log(Math.max(...array) + 1)
 	return Math.max(...array) + 1;
 
 }
@@ -227,8 +225,7 @@ function getSmallestAvailableIndex(channel) {
 function generateGrid() {
   const currGridLen = workspace.children().length,
   targetGridLen = grid.getCells,
-  diff = targetGridLen - currGridLen,
-  counter = currGridLen;
+  diff = targetGridLen - currGridLen;
   
 	for (var i = 0; i <= diff - 1; i++) {
 		const row = Math.floor(i/grid.columns),
@@ -338,8 +335,9 @@ function updateTools() {
 	$("input#gridSizeInput").val(grid.getCells);
 }
 
-function reportGridSize() {
-	console.log("Grid size: ", grid)
+function reportGridSize(t) {
+	const target = t ? grid[t] : grid
+	console.log(target)
 }
 
 function toggleInteractive(e) {
