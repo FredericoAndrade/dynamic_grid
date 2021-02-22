@@ -41,7 +41,7 @@ body{
 	-ms-user-select: none; /* Internet Explorer/Edge */
 }
 .cell.interactive {
-	animation: .185s infinite alternate jiggle;
+	animation: .155s infinite alternate jiggle;
 	animation-timing-function: ease-in-out;
 }
 .cell#virtual .nucleus {
@@ -71,11 +71,11 @@ body{
 }
 @keyframes jiggle {
   from {
-    transform: rotateZ(1deg);
+    transform: rotateZ(.8deg);
 
   }
   to {
-    transform: rotateZ(-1deg);
+    transform: rotateZ(-.8deg);
   }
 }
 #canvas .cell .nucleus {

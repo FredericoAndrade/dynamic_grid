@@ -106,17 +106,14 @@ function addRow(index) {
 	
 	top ? grid.rowSet.unshift(row) : grid.rowSet.push(row)
 	grid.rows = newRowCount
-  
 	for (var i = grid.columns - 1; i >=  0; i--) {
 		let cellindex = top ? grid.cellCount + 1 : grid.cellCount,
-		cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount + i)
+		cell = new Cell(grid.columnSet[i].index, row.index, grid.cellCount + i)
 		
-		top ? grid.cells.unshift(cell) : grid.cells.push(cell)
-
-		grid.columnSet[grid.columnSet[i].index].cells.push(cell)
-	  grid.rowSet[getSmallestAvailableIndex("rowSet") - 1].cells.push(cell)
-
-		workspace.children()[locationRoot].insertAdjacentHTML(rowLocation,renderCell(cell))
+		top ? grid.cells.unshift(cell) : grid.cells.push(cell) // add to grid
+		top ? grid.columnSet[grid.columnSet[i].index].cells.unshift(cell) : grid.columnSet[grid.columnSet[i].index].cells.push(cell) // add to columns
+	  row.cells.unshift(cell) // add to rows
+		workspace.children()[locationRoot].insertAdjacentHTML(rowLocation,renderCell(cell)) // add to dom
 	}
 	updateGridUtility()
 }
@@ -135,20 +132,17 @@ function addColumn(index) {
 		let columnCount = left ? (i * grid.columns) : (grid.columns + (grid.columns * i) - 1);
 		array.push(columnCount)
 	}
-
 	left ? grid.columnSet.unshift(column) : grid.columnSet.push(column)
 	grid.columns = grid.columnSet.length
 
 	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(newColumnIndex - 1, grid.rowSet[i].index, grid.cellCount + i),
+		let cell = new Cell(column.index, grid.rowSet[i].index, grid.cellCount + i),
 		cellLocation = left ? array[i] : array[i] + 1;
-
-		grid.cells.splice(cellLocation,0,cell)
-
-		column.cells.unshift(cell)
-	  left ? grid.rowSet[grid.rowSet[i].index].cells.unshift(cell) : grid.rowSet[grid.rowSet[i].index].cells.push(cell)
-
-		workspace.children()[array[i]].insertAdjacentHTML(columnLocation,renderCell(cell))
+		
+		grid.cells.splice(cellLocation, 0, cell) // add to grid
+		column.cells.unshift(cell) // add to columns
+	  left ? grid.rowSet[grid.rowSet[i].index].cells.unshift(cell) : grid.rowSet[grid.rowSet[i].index].cells.push(cell) // add to rows
+		workspace.children()[array[i]].insertAdjacentHTML(columnLocation,renderCell(cell)) // add to dom
 	}
 	updateGridUtility()
 }
@@ -161,15 +155,16 @@ function removeColumn(index) {
 		array = [];
 
 		for (var i = 0; i <= grid.rows - 1; i++) {
-			let columnsToPush = left ? i * grid.columns : grid.columns + (grid.columns * i) - 1;
+			let columnsToPush = left ? (i * grid.columns) : (grid.columns + (grid.columns * i) - 1);
 			array.push(columnsToPush);
 		}
 		
 		grid.columnSet.splice(columnSetLocation,1);
 		grid.columns = grid.columnSet.length;
-	  
+	  // console.log(columnSetLocation)
 		for (var i = array.length - 1; i >= 0; i--) {
-			grid.rowSet[i].cells = grid.rowSet[i].cells.filter(e => e.index != array[i])
+			// console.log(grid.rowSet[i].cells)
+			grid.rowSet[i].cells = grid.rowSet[i].cells.filter(e => e.column !== columnSetLocation)
 			grid.cells.splice(array[i],1);
 			workspace.children()[array[i]].remove();
 		}
@@ -187,6 +182,7 @@ function removeRow(index) {
 	  
 		for (var i = grid.columns - 1; i >= 0; i--) {
 			let cellLocation = top ? 0 : grid.cells.length - 1;
+			grid.columnSet[i].cells.splice(rowSetLocation, 1);
 			grid.cells.splice(cellLocation, 1);
 			workspace.children()[cellLocation].remove();
 		}
@@ -217,11 +213,14 @@ function updateGridInput(e) {
 }
 
 function getSmallestAvailableIndex(axis) {
+
 	let array = []
 	for (var i = grid[axis].length - 1; i >= 0; i--) {
 		array.push(grid[axis][i].index)
 	}
+	// console.log(Math.max(...array) + 1)
 	return Math.max(...array) + 1;
+
 }
 
 function generateGrid() {
