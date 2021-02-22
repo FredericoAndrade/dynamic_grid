@@ -9,7 +9,6 @@ body{
 	overflow: hidden;
 }
 #lens {
-	padding: 40px;	
 	height: 135%;
 	width: 135%;
 	top: -17.5%;
@@ -90,7 +89,9 @@ body{
   background-size: cover;
   background-position: center;
 }
-#canvas .cell .nucleus table {
+#canvas .cell .nucleus table,
+#canvas .cell .nucleus p,
+#canvas .cell .nucleus h1 {
 	pointer-events: none;
 } 
 #tools {
@@ -106,7 +107,10 @@ body{
 	display: inline-block;
 	clear: both;
 }
-.buttonGroup#borderGroup input[type="text"]{
+input.readout{
+	width: 3rem;
+}
+input.readout#border{
 	width: 1rem;
 }
 input {

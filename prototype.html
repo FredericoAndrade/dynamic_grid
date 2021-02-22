@@ -24,12 +24,23 @@
         <div id="tools">
 					  <div class="buttonGroup">
 					  	<p>Zoom:</p>
-					  	<input type="range" min="1" max="150" value="80" class="slider" id="zoom">
+					  	<input class="readout" id="zoom" type="text" value="" min="0" title="zoom" disabled>	
+					  	<input type="range" min="1" max="150" value="80" class="slider" id="zoomRange">
+					  </div>
+					  <div class="buttonGroup">
+					  	<p>Width:</p>
+					  	<input class="readout" id="width" type="text" value="" min="0" title="width" disabled>	
+					  	<input type="range" min="1" max="150" value="80" class="slider" id="widthRange">
+					  </div>
+					  <div class="buttonGroup">
+					  	<p>Height:</p>
+					  	<input class="readout" id="height" type="text" value="" min="0" title="height" disabled>	
+					  	<input type="range" min="1" max="150" value="80" class="slider" id="heightRange">
 					  </div>
 					  <div class="buttonGroup" id="borderGroup">
 				  		<p>Border:</p>
-				  		<input type="text" value="2" min="0" step="1" disabled>	
-				  		<input type="range" min="0" max="10" value="2" step="1" class="slider" id="border">
+				  		<input class="readout" id="border" type="text" value="2" min="0" step="1" disabled>	
+				  		<input type="range" min="0" max="16" value="2" step="1" class="slider" id="borderRange">
 					  	<button type="button" title="borderColor" id="borderColor">white</button>
 				  	</div>
 					  <div class="buttonGroup"><p>Columns: </p>
@@ -57,7 +68,7 @@
 					  </div>
 						<div class="buttonGroup">
 							<p>Number of cells:</p>
-							<input type="number" id="gridSizeInput" name="gridSizeInput" min="0" step="1" disabled>
+							<input type="number" class="readout" id="gridSizeInput" name="gridSizeInput" min="0" step="1" disabled>
 							<br>
 						  <button id="gridSize">report grid size</button>
 						  <button id="toggleInteractive">static</button>

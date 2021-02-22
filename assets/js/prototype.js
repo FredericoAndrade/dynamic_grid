@@ -1,5 +1,4 @@
 "use strict";
-//bug where removing columns does not remove the correct cells from grid.cells
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -7,8 +6,8 @@ lens = $("#lens"),
 interactive = false,
 height,
 width,
-zoom = $("#zoom"),
-border = $("#border"),
+zoom = $("#zoomRange"),
+border = $("#borderRange"),
 borderVal = border.val,
 val = zoom.val();
 
@@ -258,27 +257,22 @@ function renderCell(cell) {
         border-color:${grid.borderColor};
         "
       >
-      <!--table>
+			<h1>${cell.index}</h1>
+      <table>
 	      <thead>
 	      	<tr>
-		      	<td>id</td>
-		      	<td>adr</td>
 		      	<td>col</td>
 		      	<td>row</td>
-		      	<td>hex</td>
 	      	</tr>
 	      </thead>
 	      <tbody>
 		      <tr>
-		      	<td>${cell.index}</td>
-		      	<td>${cell.address}</td>
 		      	<td>${cell.column}</td>
 		      	<td>${cell.row}</td>
-		      	<td>${cell.color}</td>
 	      	</tr>
 	      </tbody>
-      </table-->
-      <h1>${cell.index}</h1>
+      </table>
+      <p>${cell.color}</p>
       </div>
     </div>
   `)
@@ -293,6 +287,9 @@ function updateZoom() {
 	})
 	height = workspace.innerHeight()
 	width = workspace.innerWidth()
+	$("input.readout#zoom")[0].value = `${val}%`
+	$("input.readout#width")[0].value = `${Math.round(width)}px`
+	$("input.readout#height")[0].value = `${Math.round(height)}px`
 }
 
 zoom.on("input change", function() {
@@ -304,7 +301,8 @@ zoom.on("input change", function() {
 border.on("input change", function() {
   borderVal = this.value;
   grid.border = this.value;
-  $(".buttonGroup#borderGroup input[type='text']")[0].value = this.value
+  console.log("hi")
+  $("input.readout#border")[0].value = this.value
   $(".nucleus").css("border-width",`${grid.border}px`);
   workspace.css("outline-width",`${grid.border}px`);
 })
