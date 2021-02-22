@@ -1,5 +1,5 @@
 "use strict";
-// todo add cells to col and row classes appropriately
+// bug with duplicate cell ids when adding left, right, removing left and adding left again; consider getSmallestIndex(?)
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -16,14 +16,14 @@ updateZoom();
 
 class Grid {
   constructor(columns, rows, border) {
+    this.columnSet = [];
+    this.rowSet = [];
+    this.cells = [];
     this.columns = columns;
     this.rows = rows;
     this.border = border;
     this.origin = 1;
     this.cellCount = columns * rows;
-    this.columnSet = [];
-    this.rowSet = [];
-    this.cells = [];
     this.borderColor = "white";
   };
   get getCells() {
@@ -100,18 +100,19 @@ const grid = new Grid(4,3,2);
 function addRow(index) {
 	const row = new Row(getSmallestAvailableIndex("rowSet")),
 	top = index == "top",
-	newRowCount = grid.rows + 1,
 	rowLocation = top ? "beforebegin" : "afterend",
 	locationRoot = top ? 0 : workspace.children().length - 1;
 	
 	top ? grid.rowSet.unshift(row) : grid.rowSet.push(row)
-	grid.rows = newRowCount
+	grid.rows = grid.rows + 1
 	for (var i = grid.columns - 1; i >=  0; i--) {
+		const column = i;
 		let cellindex = top ? grid.cellCount + 1 : grid.cellCount,
-		cell = new Cell(grid.columnSet[i].index, row.index, grid.cellCount + i)
-		
+		cell = new Cell(grid.columnSet[column].index, row.index, grid.cellCount + column)
+
 		top ? grid.cells.unshift(cell) : grid.cells.push(cell) // add to grid
-		top ? grid.columnSet[grid.columnSet[i].index].cells.unshift(cell) : grid.columnSet[grid.columnSet[i].index].cells.push(cell) // add to columns
+
+		top ? grid.columnSet[column].cells.unshift(cell) : grid.columnSet[i].cells.push(cell) // add to columns
 	  row.cells.unshift(cell) // add to rows
 		workspace.children()[locationRoot].insertAdjacentHTML(rowLocation,renderCell(cell)) // add to dom
 	}
@@ -136,13 +137,14 @@ function addColumn(index) {
 	grid.columns = grid.columnSet.length
 
 	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(column.index, grid.rowSet[i].index, grid.cellCount + i),
-		cellLocation = left ? array[i] : array[i] + 1;
+		const row = i;
+		let cell = new Cell(column.index, grid.rowSet[row].index, grid.cellCount + row),
+		cellLocation = left ? array[row] : array[row] + 1;
 		
 		grid.cells.splice(cellLocation, 0, cell) // add to grid
 		column.cells.unshift(cell) // add to columns
-	  left ? grid.rowSet[grid.rowSet[i].index].cells.unshift(cell) : grid.rowSet[grid.rowSet[i].index].cells.push(cell) // add to rows
-		workspace.children()[array[i]].insertAdjacentHTML(columnLocation,renderCell(cell)) // add to dom
+	  left ? grid.rowSet[row].cells.unshift(cell) : grid.rowSet[row].cells.push(cell) // add to rows
+		workspace.children()[array[row]].insertAdjacentHTML(columnLocation,renderCell(cell)) // add to dom
 	}
 	updateGridUtility()
 }
@@ -150,9 +152,10 @@ function addColumn(index) {
 
 function removeColumn(index) {
 	if (grid.columns > 1) {
-		let left = index == "left",
+		const left = index == "left",
 		columnSetLocation = left ? 0 : grid.columnSet.length - 1,
-		array = [];
+		column = grid.columnSet[columnSetLocation]
+		let array = [];
 
 		for (var i = 0; i <= grid.rows - 1; i++) {
 			let columnsToPush = left ? (i * grid.columns) : (grid.columns + (grid.columns * i) - 1);
@@ -161,10 +164,8 @@ function removeColumn(index) {
 		
 		grid.columnSet.splice(columnSetLocation,1);
 		grid.columns = grid.columnSet.length;
-	  // console.log(columnSetLocation)
 		for (var i = array.length - 1; i >= 0; i--) {
-			// console.log(grid.rowSet[i].cells)
-			grid.rowSet[i].cells = grid.rowSet[i].cells.filter(e => e.column !== columnSetLocation)
+			grid.rowSet[i].cells = grid.rowSet[i].cells.filter(e => e.column !== column.index)
 			grid.cells.splice(array[i],1);
 			workspace.children()[array[i]].remove();
 		}
@@ -212,11 +213,11 @@ function updateGridInput(e) {
 	}
 }
 
-function getSmallestAvailableIndex(axis) {
+function getSmallestAvailableIndex(channel) {
 
 	let array = []
-	for (var i = grid[axis].length - 1; i >= 0; i--) {
-		array.push(grid[axis][i].index)
+	for (var i = grid[channel].length - 1; i >= 0; i--) {
+		array.push(grid[channel][i].index)
 	}
 	// console.log(Math.max(...array) + 1)
 	return Math.max(...array) + 1;
