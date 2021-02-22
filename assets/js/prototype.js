@@ -1,4 +1,5 @@
 "use strict";
+// todo add cells to col and row classes appropriately
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
@@ -15,9 +16,9 @@ updateZoom();
 
 class Grid {
   constructor(columns, rows, border) {
-    this.columns = columns,
-    this.rows = rows,
-    this.border = border,
+    this.columns = columns;
+    this.rows = rows;
+    this.border = border;
     this.origin = 1;
     this.cellCount = columns * rows;
     this.columnSet = [];
@@ -32,13 +33,15 @@ class Grid {
 
 class Column {
 	constructor(index) {
-		this.index = index
+		this.index = index;
+		this.cells = [];
 	}
 }
 
 class Row {
 	constructor(index) {
-		this.index = index
+		this.index = index;
+		this.cells = [];
 	}
 }
 
@@ -70,8 +73,8 @@ class Cell {
 	};
 };
 
-const grid = new Grid(7,6,2);
-// const grid = new Grid(4,3,2);
+// const grid = new Grid(7,6,2);
+const grid = new Grid(4,3,2);
 
 ( //Render Grid
   function() {
@@ -109,6 +112,10 @@ function addRow(index) {
 		cell = new Cell(grid.columnSet[i].index, getSmallestAvailableIndex("rowSet") - 1, grid.cellCount + i)
 		
 		top ? grid.cells.unshift(cell) : grid.cells.push(cell)
+
+		grid.columnSet[grid.columnSet[i].index].cells.push(cell)
+	  grid.rowSet[getSmallestAvailableIndex("rowSet") - 1].cells.push(cell)
+
 		workspace.children()[locationRoot].insertAdjacentHTML(rowLocation,renderCell(cell))
 	}
 	updateGridUtility()
@@ -116,7 +123,8 @@ function addRow(index) {
 
 
 function addColumn(index) {
-	const column = new Column(getSmallestAvailableIndex("columnSet")),
+	const newColumnIndex = getSmallestAvailableIndex("columnSet"),
+	column = new Column(newColumnIndex),
 	left = index == "left",
 	newColumnCount = grid.columns + 1,
 	columnLocation = left ? "beforebegin" : "afterend";
@@ -127,15 +135,19 @@ function addColumn(index) {
 		let columnCount = left ? (i * grid.columns) : (grid.columns + (grid.columns * i) - 1);
 		array.push(columnCount)
 	}
-	
+
 	left ? grid.columnSet.unshift(column) : grid.columnSet.push(column)
 	grid.columns = grid.columnSet.length
 
 	for (var i = array.length - 1; i >= 0; i--) {
-		let cell = new Cell(getSmallestAvailableIndex("columnSet") - 1, grid.rowSet[i].index, grid.cellCount + i),
+		let cell = new Cell(newColumnIndex - 1, grid.rowSet[i].index, grid.cellCount + i),
 		cellLocation = left ? array[i] : array[i] + 1;
 
 		grid.cells.splice(cellLocation,0,cell)
+
+		column.cells.unshift(cell)
+	  left ? grid.rowSet[grid.rowSet[i].index].cells.unshift(cell) : grid.rowSet[grid.rowSet[i].index].cells.push(cell)
+
 		workspace.children()[array[i]].insertAdjacentHTML(columnLocation,renderCell(cell))
 	}
 	updateGridUtility()
@@ -157,6 +169,7 @@ function removeColumn(index) {
 		grid.columns = grid.columnSet.length;
 	  
 		for (var i = array.length - 1; i >= 0; i--) {
+			grid.rowSet[i].cells = grid.rowSet[i].cells.filter(e => e.index != array[i])
 			grid.cells.splice(array[i],1);
 			workspace.children()[array[i]].remove();
 		}
@@ -223,6 +236,10 @@ function generateGrid() {
 		cell = new Cell(column, row, grid.cells.length);
 
 	  grid.cells.push(cell)
+
+	  grid.columnSet[column].cells.push(cell)
+	  grid.rowSet[row].cells.push(cell)
+
 	  workspace.append(renderCell(cell));
 	}
 	updateGridUtility()
@@ -347,6 +364,10 @@ $("#toggleInteractive").on("click", function(e) {toggleInteractive(e)})
 
 window.onresize = reportWindowSize;
 
+$(document).on("click",".nucleus",function(e) {
+	console.log(grid.cells.filter(f => f.index == e.target.parentNode.dataset.cell)[0])
+})
+
 // Drag and drop behavior
 // from https://javascript.info/mouse-drag-and-drop
 $(document).on("mousedown",".cell", function(e) {
@@ -360,14 +381,12 @@ $(document).on("mousedown",".cell", function(e) {
 		shift = {
 	  	x: e.clientX - cellDimensions.left,
 	  	y: e.clientY - cellDimensions.top
-	  }
+	  };
 
-	  let destination = document.elementFromPoint(e.clientX,e.clientY).parentElement
-	  let destinationCellIndex = Array.prototype.indexOf.call(workspace.children(),destination)
-		
-		$(".cell").toggleClass("focused")
+	  let destination = document.elementFromPoint(e.clientX,e.clientY).parentElement,
+	  destinationCellIndex = Array.prototype.indexOf.call(workspace.children(),destination),
+		obj =  clickedCell.cloneNode(true);
 
-		let obj =  clickedCell.cloneNode(true);
 		Object.assign(obj.style, {
 			zIndex: 1000,
 			position:"absolute",
@@ -387,6 +406,8 @@ $(document).on("mousedown",".cell", function(e) {
 		function onMouseMove(event) {
 		  moveAt(event.pageX, event.pageY);
 		  destination = document.elementFromPoint(event.pageX,event.pageY).parentElement
+		  $(".cell").removeClass("destination")
+		  $(destination).addClass("destination")
 		  destinationCellIndex = Array.prototype.indexOf.call(workspace.children(),destination)
 		}
 	  
@@ -394,7 +415,8 @@ $(document).on("mousedown",".cell", function(e) {
 
 	  $(document).on("mouseup",".cell", function(f) {
 	  	const workspaceNode = workspace[0];
-	  	
+	  	let el = $("#virtual")[0]
+	  	$(".cell").removeClass("destination")
 	  	obj.hidden = true;
 		  let elemBelow = document.elementFromPoint(f.clientX, f.clientY);
 		  obj.hidden = false;
@@ -410,10 +432,6 @@ $(document).on("mousedown",".cell", function(e) {
 		  	}
 	  	}
 
-	  	$(".cell").toggleClass("focused")
-
-	  	let el = $("#virtual")[0]
-	    
 	    document.removeEventListener('mousemove', onMouseMove);
 	    obj.remove()
 	    $(document).unbind('mouseup');
