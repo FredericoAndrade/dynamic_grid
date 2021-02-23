@@ -1,5 +1,11 @@
 "use strict";
 
+// update grid objects after drag & drop
+// Arbitrary canvas size
+// get border values
+// change one cell
+// infinite scroll in any direction with recycling
+
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
 lens = $("#lens"),
@@ -11,7 +17,7 @@ border = $("#borderRange"),
 borderVal = border.val,
 val = zoom.val();
 
-updateZoom();
+setZoom();
 
 class Grid {
   constructor(columns, rows, border) {
@@ -53,6 +59,7 @@ class Cell {
 		this.color = this.getRandomColor();
     this.column = col;
     this.row = row;   
+    this.data = "";
   };
   get address() {
   	return this.getAddress();
@@ -70,8 +77,8 @@ class Cell {
 	};
 };
 
-// const grid = new Grid(7,6,2);
-const grid = new Grid(4,3,2);
+const grid = new Grid(7,6,2);
+// const grid = new Grid(4,3,2);
 
 ( //Render Grid
   function() {
@@ -278,7 +285,7 @@ function renderCell(cell) {
   `)
 }
 
-function updateZoom() {
+function setZoom() {
 	Object.assign(lens[0].style, {
 		width:`${val}%`,
 		height:`${val}%`,
@@ -292,29 +299,64 @@ function updateZoom() {
 	$("input.readout#height")[0].value = `${Math.round(height)}px`
 }
 
-zoom.on("input change", function() {
-  val = this.value;
-  updateZoom()
+function changeZoom(e) {
+	val = e.target.value;
+  setZoom()
+	updateCellSize();
+}
+
+function changeBorderWidth(e) {
+	borderVal = e.target.value;
+  grid.border = e.target.value;
+  $("input.readout#border")[0].value = e.target.value
+  $(".nucleus").css("border-width",`${grid.border}px`);
+  workspace.css("outline-width",`${grid.border}px`);	
+}
+
+$("#widthRange").attr("max", $("body").innerWidth()*1.5);
+$("#widthRange").attr("value",$("body").innerWidth()*(val/100))
+$("#widthRange").on("input change", function() {
+	let w = this.value
+	Object.assign(canvas[0].style, {
+		width: `${w}px`,
+		left: `50%`,
+		marginLeft: `${-(w/2)}px`
+	})
+	$("input.readout#width")[0].value = `${w}px`
 	updateCellSize();
 })
 
-border.on("input change", function() {
-  borderVal = this.value;
-  grid.border = this.value;
-  console.log("hi")
-  $("input.readout#border")[0].value = this.value
-  $(".nucleus").css("border-width",`${grid.border}px`);
-  workspace.css("outline-width",`${grid.border}px`);
+$("#heightRange").attr("max", $("body").innerHeight()*1.5);
+$("#heightRange").attr("value",$("body").innerHeight()*(val/100))
+$("#heightRange").on("input change", function() {
+	let h = this.value
+	Object.assign(canvas[0].style, {
+		height: `${h}px`,
+		top: `50%`,
+		marginTop: `${-(h/2)}px`
+	})
+	$("input.readout#height")[0].value = `${h}px`
+	updateCellSize();
 })
 
-$("#borderColor").click(function(e){
+
+function test() {
+	setInterval(function() {
+		addColumn("right")
+		removeColumn("left")
+		addRow("bottom")
+		removeRow("top")
+	},1000)
+}
+
+function changeBorderColor(e) {
   const color = e.target.innerText;
   let output = color == "white" ? "black" : "white"
   e.target.innerText = output
   grid.borderColor = output;
   workspace.css("outline-color",output,"background",output);
   $(".nucleus").css("border-color",output);
-})
+}
 
 function reportWindowSize() {
   height = window.innerHeight;
@@ -357,6 +399,10 @@ $("button#removeBottom").on("click",function(){removeRow("bottom")})
 $("#gridSize").on("click", function() {reportGridSize()})
 $("input[type='number']").on("change",function(e) {updateGridInput(e)})
 $("#toggleInteractive").on("click", function(e) {toggleInteractive(e)})
+zoom.on("input change", function(e) {changeZoom(e)})
+border.on("input change", function(e) {changeBorderWidth(e)})
+$("#borderColor").click(function(e){changeBorderColor(e)})
+
 
 window.onresize = reportWindowSize;
 
@@ -375,8 +421,8 @@ $(document).on("mousedown",".cell", function(e) {
 			left: clickedCell.getBoundingClientRect().left
 		},
 		shift = {
-	  	x: e.clientX - cellDimensions.left,
-	  	y: e.clientY - cellDimensions.top
+	  	x: e.clientX - cellDimensions.left + (($("body").width() - canvas.width())/2),
+	  	y: e.clientY - cellDimensions.top + (($("body").height() - canvas.height())/2)
 	  };
 
 	  let destination = document.elementFromPoint(e.clientX,e.clientY).parentElement,
