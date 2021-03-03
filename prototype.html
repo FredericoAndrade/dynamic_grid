@@ -23,26 +23,30 @@
         </div>
         <div id="tools">
 					  <div class="buttonGroup">
-					  	<p>Zoom:</p>
-					  	<input class="readout" id="zoom" type="text" value="" min="0" title="zoom" disabled>	
-					  	<input type="range" min="1" max="150" value="135" class="slider" id="zoomRange">
-					  </div>
-					  <div class="buttonGroup">
-					  	<p>Width:</p>
+					  	<p>Canvas width:</p>
 					  	<input class="readout" id="width" type="text" value="" min="1" title="width" disabled>	
 					  	<input type="range" min="1" max="" value="" class="slider" id="widthRange">
 					  </div>
 					  <div class="buttonGroup">
-					  	<p>Height:</p>
+					  	<p>Canvas height:</p>
 					  	<input class="readout" id="height" type="text" value="" min="1" title="height" disabled>	
 					  	<input type="range" min="1" max="" value="" class="slider" id="heightRange">
 					  </div>
-					  <div class="buttonGroup" id="borderGroup">
-				  		<p>Border:</p>
-				  		<input class="readout" id="border" type="text" value="2" min="0" step="1" disabled>	
-				  		<input type="range" min="0" max="16" value="2" step="1" class="slider" id="borderRange">
-					  	<button type="button" title="borderColor" id="borderColor">white</button>
-				  	</div>
+					  <div class="buttonGroup">
+					  	<p>Lens zoom:</p>
+					  	<input class="readout" id="zoom" type="text" value="" min="0" title="zoom" disabled>	
+					  	<input type="range" min="1" max="150" value="" class="slider" id="zoomRange">
+					  </div>
+						<div class="buttonGroup">
+							<button id="screen" class="pageSize">screen</button>
+							<button id="letter" class="pageSize">letter (8.5' x 11')</button>	
+						</div>
+						<hr>
+						<div class="buttonGroup">
+							<p>Number of cells:</p>
+							<input type="number" class="readout" id="gridSizeInput" name="gridSizeInput" min="0" step="1" disabled>
+						  <button id="gridSize">report grid size</button>
+						</div>
 					  <div class="buttonGroup"><p>Columns: </p>
 					  	<div class="subgroup">
 					  		<button type="button" title="addLeft" id="addLeft" name="addLeft">+</button>
@@ -66,13 +70,28 @@
 						  	<button type="button" title="removeBottom" id="removeBottom" name="removeBottom">-</button>
 					  	</div>
 					  </div>
+					  <div class="buttonGroup">
+				  		<p>Border:</p>
+				  		<input class="readout" id="border" type="text" value="2" min="0" step="1" disabled>	
+				  		<input type="range" min="0" max="16" value="2" step="1" class="slider" id="borderRange">
+					  	<button type="button" title="borderColor" id="borderColor">white</button>
+				  	</div>
+						<hr>
 						<div class="buttonGroup">
-							<p>Number of cells:</p>
-							<input type="number" class="readout" id="gridSizeInput" name="gridSizeInput" min="0" step="1" disabled>
-						  <button id="gridSize">report grid size</button>
-						  <br>	
-						  <button id="toggleInteractive">static</button>
+							<p>Interactivity:</p>
+							<button id="toggleInteractive">static</button>
+						</div>
+						<div class="buttonGroup">
+							<p>Animation:</p>
 						  <button id="toggleAnimate">animate</button>
+						</div>
+						<div class="buttonGroup">
+						  <p>Metadata:</p>
+						  <button id="toggleMetadata">hide</button>
+						</div>
+						<div class="buttonGroup">
+						  <p>Get border cells:</p>
+						  <button id="getBorderCells">get border cells</button>
 						</div>
 						
 					</div>

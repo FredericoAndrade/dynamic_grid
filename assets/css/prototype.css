@@ -62,7 +62,11 @@ body{
 .cell .nucleus h1 {
 	pointer-events: none;
 } 
-
+.cell.metadata h1,
+.cell.metadata table,
+.cell.metadata p {
+	display: none;
+}
 /* Interactive */
 .cell.interactive {
 	animation: .155s infinite alternate jiggle;
@@ -111,6 +115,11 @@ body{
 	float: left;
 	display: inline-block;
 	clear: both;
+	width: 100%;
+}
+hr{
+	display: inline-block;
+	width: 100%;
 }
 input.readout{
 	width: 3rem;
@@ -139,4 +148,9 @@ button {
 	display: inline-block;
 	clear: both;
 	float: left;
+}
+
+#tools {
+	background: white;
+	padding: 8px;
 }

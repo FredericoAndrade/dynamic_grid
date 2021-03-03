@@ -1,27 +1,24 @@
 "use strict";
 
 // update grid objects after drag & drop
-// Arbitrary canvas size
-// get border values
 // change one cell
 // infinite scroll in any direction with recycling
+// reshape current grid
+// changing grid while in interactive mode messes up which cells are interactive and which are not
 
 let canvas = $("#canvas"),
 workspace = $("#workspace"),
 lens = $("#lens"),
 interactive = false,
 animate = false,
+metadata = true,
+fixed = false, //if true, changing grid dimensions preserves cell count as best as possible.
 height,
 width,
-zoom = $("#zoomRange"),
-border = $("#borderRange"),
-borderVal = border.val,
-val = zoom.val();
-
-setZoom();
+viewportZoom;
 
 class Grid {
-  constructor(columns, rows, border) {
+  constructor(columns, rows, border, zoom) {
     this.columnSet = [];
     this.rowSet = [];
     this.cells = [];
@@ -29,6 +26,7 @@ class Grid {
     this.rows = rows;
     this.border = border;
     this.borderColor = "white";
+    this.zoom = zoom;
   };
   get getCells() {
     return this.columns * this.rows;
@@ -78,8 +76,10 @@ class Cell {
 	};
 };
 
-const grid = new Grid(7,6,2);
-// const grid = new Grid(4,3,2);
+// const grid = new Grid(7, 7, 2, 135);
+const grid = new Grid(4, 3, 2, 80);
+
+initializeZoom();
 
 ( //Render Grid
   function() {
@@ -286,59 +286,77 @@ function renderCell(cell) {
   `)
 }
 
+function initializeZoom() {
+	viewportZoom = grid.zoom
+	$("#zoomRange")[0].value = viewportZoom
+	setZoom();	
+}
+
 function setZoom() {
 	Object.assign(lens[0].style, {
-		width:`${val}%`,
-		height:`${val}%`,
-		top:`${(100-val)/2}%`,
-		left:`${(100-val)/2}%`
+		width:`${viewportZoom}%`,
+		height:`${viewportZoom}%`,
+		top:`${(100-viewportZoom)/2}%`,
+		left:`${(100-viewportZoom)/2}%`
 	})
-	height = workspace.innerHeight()
-	width = workspace.innerWidth()
-	$("input.readout#zoom")[0].value = `${val}%`
+	height = canvas.innerHeight()
+	width = canvas.innerWidth()
+	$("input.readout#zoom")[0].value = `${viewportZoom}%`
 	$("input.readout#width")[0].value = `${Math.round(width)}px`
 	$("input.readout#height")[0].value = `${Math.round(height)}px`
 }
 
 function changeZoom(e) {
-	val = e.target.value;
+	viewportZoom = e.target.value;
   setZoom()
 	updateCellSize();
 }
 
 function changeBorderWidth(e) {
-	borderVal = e.target.value;
+	$("#borderRange").val = e.target.value;
   grid.border = e.target.value;
   $("input.readout#border")[0].value = e.target.value
   $(".nucleus").css("border-width",`${grid.border}px`);
   workspace.css("outline-width",`${grid.border}px`);	
 }
-
-$("#widthRange").attr("max", $("body").innerWidth()*1.5);
-$("#widthRange").attr("value",$("body").innerWidth()*(val/100))
-$("#widthRange").on("input change", function() {
-	let w = this.value
+function changeCanvasWidth(e) {
+	let width = e.target.value
 	Object.assign(canvas[0].style, {
-		width: `${w}px`,
+		width: `${width}px`,
 		left: `50%`,
-		marginLeft: `${-(w/2)}px`
+		marginLeft: `${-(width/2)}px`
 	})
-	$("input.readout#width")[0].value = `${w}px`
-	updateCellSize();
-})
+	$("input.readout#width")[0].value = `${width}px`
+	updateCellSize();	
+}
 
-$("#heightRange").attr("max", $("body").innerHeight()*1.5);
-$("#heightRange").attr("value",$("body").innerHeight()*(val/100))
-$("#heightRange").on("input change", function() {
-	let h = this.value
+function changeCanvasHeight(e) {
+	let height = e.target.value
 	Object.assign(canvas[0].style, {
-		height: `${h}px`,
+		height: `${height}px`,
 		top: `50%`,
-		marginTop: `${-(h/2)}px`
+		marginTop: `${-(height/2)}px`
 	})
-	$("input.readout#height")[0].value = `${h}px`
-	updateCellSize();
-})
+	$("input.readout#height")[0].value = `${height}px`
+	updateCellSize();		
+}
+
+function setCanvasDimensions() {
+	let width = $("body").innerWidth()
+	let height = $("body").innerHeight()
+	$("#widthRange").attr({
+		max: width,
+		value: width
+	});
+	$("input.readout#width")[0].value = (width + 'px')
+	$("#heightRange").attr({
+		max: height,
+		value: height
+	});
+	$("input.readout#height")[0].value = (height + 'px')
+}
+
+setCanvasDimensions()
 
 setInterval(function() {
 	if (animate) {
@@ -361,6 +379,7 @@ function changeBorderColor(e) {
 function reportWindowSize() {
   height = window.innerHeight;
   width = window.innerWidth;
+  setCanvasDimensions();
   updateCellSize();
 };
 
@@ -387,8 +406,63 @@ function toggleInteractive(e) {
 	interactive = !interactive
 }
 
-function toggleAnimate() {
+function toggleAnimate(e) {
+	const state = animate ? "animate" : "stop animating"
+	e.target.innerText = state
 	animate = !animate
+}
+
+function toggleMetadata(e) {
+	const state = metadata ? "show" : "hide"
+	e.target.innerText = state
+	$(".cell").toggleClass("metadata")
+	metadata = !metadata
+}
+
+function togglePageSize(e) {
+	const state = e.target.id
+	const letter = {
+		height:750,
+		width:563
+	}
+	if (state == "letter") {
+		Object.assign(canvas[0].style, {
+			width: letter.width + 'px',
+			height:letter.height + 'px',
+			left: 50 + '%',
+			top: 50 + '%',
+			marginLeft: '-' + (letter.width / 2)  + 'px',
+			marginTop: '-' + (letter.height / 2)  + 'px',
+		})
+	} 
+	if (state == "screen") {
+		Object.assign(canvas[0].style, {
+			width: 100 + '%',
+			height: 100 + '%',
+			left: 'initial',
+			top: 'initial',
+			marginLeft: 'initial',
+			marginTop: 'initial',
+		})
+	}
+	$("#widthRange").attr("value", canvas.innerWidth())
+	$("#heightRange").attr("value", canvas.innerHeight())
+	$("input.readout#width")[0].value = canvas.innerWidth() + 'px'
+	$("input.readout#height")[0].value = canvas.innerHeight() + 'px'
+	updateCellSize();
+}
+
+
+function getBorderCells() {
+	let borderCells=[];
+	borderCells.push(grid.columnSet[0].cells)
+	borderCells.push(grid.columnSet[grid.columnSet.length - 1].cells)
+	borderCells.push(grid.rowSet[0].cells)
+	borderCells.push(grid.rowSet[grid.rowSet.length - 1].cells)
+	borderCells = borderCells.flat()
+	let uniqueBorderCells = borderCells.filter((value,index,self) => self.indexOf(value) === index)
+	let sortedUniqueBorderCells = uniqueBorderCells.sort((a, b) => (a.index > b.index) ? 1 : -1)
+	console.log(sortedUniqueBorderCells)
 }
 
 // Bindings
@@ -401,12 +475,17 @@ $("button#addBottom").on("click",function(){addRow("bottom")})
 $("button#removeTop").on("click",function(){removeRow("top")})
 $("button#removeBottom").on("click",function(){removeRow("bottom")})
 $("#gridSize").on("click", function() {reportGridSize()})
+$("#widthRange").on("input change", function(e) {changeCanvasWidth(e)})
+$("#heightRange").on("input change", function(e) {changeCanvasHeight(e)})
 $("input[type='number']").on("change",function(e) {updateGridInput(e)})
 $("#toggleInteractive").on("click", function(e) {toggleInteractive(e)})
-zoom.on("input change", function(e) {changeZoom(e)})
-border.on("input change", function(e) {changeBorderWidth(e)})
+$("#zoomRange").on("input change", function(e) {changeZoom(e)})
+$("#borderRange").on("input change", function(e) {changeBorderWidth(e)})
 $("#borderColor").click(function(e){changeBorderColor(e)})
-$("#toggleAnimate").click(function(){toggleAnimate()})
+$("#toggleAnimate").click(function(e){toggleAnimate(e)})
+$("#toggleMetadata").click(function(e){toggleMetadata(e)})
+$("button.pageSize").click(function(e){togglePageSize(e)})
+$("#getBorderCells").on("click", function() {getBorderCells()})
 
 
 window.onresize = reportWindowSize;
