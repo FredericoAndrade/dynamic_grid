@@ -10,6 +10,7 @@ let canvas = $("#canvas"),
 workspace = $("#workspace"),
 lens = $("#lens"),
 interactive = false,
+animate = false,
 height,
 width,
 zoom = $("#zoomRange"),
@@ -339,15 +340,14 @@ $("#heightRange").on("input change", function() {
 	updateCellSize();
 })
 
-
-function test() {
-	setInterval(function() {
+setInterval(function() {
+	if (animate) {
 		addColumn("right")
 		removeColumn("left")
 		addRow("bottom")
 		removeRow("top")
-	},1000)
-}
+	}
+},1000)
 
 function changeBorderColor(e) {
   const color = e.target.innerText;
@@ -387,6 +387,10 @@ function toggleInteractive(e) {
 	interactive = !interactive
 }
 
+function toggleAnimate() {
+	animate = !animate
+}
+
 // Bindings
 $("button#addLeft").on("click",function(){addColumn("left")})
 $("button#addRight").on("click",function(){addColumn("right")})
@@ -402,6 +406,7 @@ $("#toggleInteractive").on("click", function(e) {toggleInteractive(e)})
 zoom.on("input change", function(e) {changeZoom(e)})
 border.on("input change", function(e) {changeBorderWidth(e)})
 $("#borderColor").click(function(e){changeBorderColor(e)})
+$("#toggleAnimate").click(function(){toggleAnimate()})
 
 
 window.onresize = reportWindowSize;
